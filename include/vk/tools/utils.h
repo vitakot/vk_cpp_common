@@ -67,8 +67,7 @@ inline std::chrono::milliseconds getMsTimestamp(const TimePoint time) {
 
 inline std::string stringToHex(const unsigned char* data, const std::size_t len) {
     std::string s(len * 2, ' ');
-    for (std::size_t i = 0; i < len; ++i)
-    {
+    for (std::size_t i = 0; i < len; ++i) {
         s[2 * i] = hexMap[(data[i] & 0xF0) >> 4];
         s[2 * i + 1] = hexMap[data[i] & 0x0F];
     }

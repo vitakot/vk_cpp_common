@@ -47,8 +47,7 @@ public:
 
     template <typename T, typename... Args>
     std::shared_ptr<T> create(Args&&... args) noexcept {
-        for (auto& entry : m_moduleFactories)
-        {
+        for (auto& entry : m_moduleFactories) {
             std::shared_ptr<T> retVal = entry->create<T>(std::forward<Args>(args)...);
 
             if (retVal != nullptr)
@@ -60,8 +59,7 @@ public:
 
     template <typename T, typename... Args>
     std::shared_ptr<T> createByName(const std::string& name, Args&&... args) noexcept {
-        for (auto& entry : m_moduleFactories)
-        {
+        for (auto& entry : m_moduleFactories) {
             std::shared_ptr<T> retVal = entry->createByName<T>(name, std::forward<Args>(args)...);
 
             if (retVal != nullptr)

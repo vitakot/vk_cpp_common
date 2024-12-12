@@ -25,20 +25,15 @@ template <typename ValueType>
 bool readValue(const nlohmann::json& json, const std::string& key, ValueType& value, const bool canThrow = false) {
     const auto it = json.find(key);
 
-    if (canThrow)
-    {
-        if (!it.value().is_null())
-        {
+    if (canThrow) {
+        if (!it.value().is_null()) {
             value = it.value();
         }
         return true;
     }
-    else
-    {
-        if (it != json.end())
-        {
-            if (!it.value().is_null())
-            {
+    else {
+        if (it != json.end()) {
+            if (!it.value().is_null()) {
                 value = it.value();
             }
             return true;
@@ -57,21 +52,16 @@ bool readValue(const nlohmann::json& json, const std::string& key, ValueType& va
 inline double readStringAsDouble(const nlohmann::json& json, const std::string& key, const double defaultVal = 0.0) {
     const auto it = json.find(key);
 
-    try
-    {
-        if (it != json.end())
-        {
-            if (!it.value().is_null() && it.value().is_string())
-            {
+    try {
+        if (it != json.end()) {
+            if (!it.value().is_null() && it.value().is_string()) {
                 return std::stod(it->get<std::string>());
             }
         }
     }
-    catch (std::invalid_argument&)
-    {
+    catch (std::invalid_argument&) {
     }
-    catch (std::out_of_range&)
-    {
+    catch (std::out_of_range&) {
     }
 
     return defaultVal;
@@ -87,21 +77,16 @@ inline double readStringAsDouble(const nlohmann::json& json, const std::string& 
 inline int readStringAsInt(const nlohmann::json& json, const std::string& key, const int defaultVal = 0) {
     const auto it = json.find(key);
 
-    try
-    {
-        if (it != json.end())
-        {
-            if (!it.value().is_null() && it.value().is_string())
-            {
+    try {
+        if (it != json.end()) {
+            if (!it.value().is_null() && it.value().is_string()) {
                 return std::stoi(it->get<std::string>());
             }
         }
     }
-    catch (std::invalid_argument&)
-    {
+    catch (std::invalid_argument&) {
     }
-    catch (std::out_of_range&)
-    {
+    catch (std::out_of_range&) {
     }
 
     return defaultVal;
@@ -117,21 +102,16 @@ inline int readStringAsInt(const nlohmann::json& json, const std::string& key, c
 inline int64_t readStringAsInt64(const nlohmann::json& json, const std::string& key, const int64_t defaultVal = 0) {
     const auto it = json.find(key);
 
-    try
-    {
-        if (it != json.end())
-        {
-            if (!it.value().is_null() && it.value().is_string())
-            {
+    try {
+        if (it != json.end()) {
+            if (!it.value().is_null() && it.value().is_string()) {
                 return std::stoll(it->get<std::string>());
             }
         }
     }
-    catch (std::invalid_argument&)
-    {
+    catch (std::invalid_argument&) {
     }
-    catch (std::out_of_range&)
-    {
+    catch (std::out_of_range&) {
     }
 
     return defaultVal;
@@ -150,25 +130,19 @@ template <typename ValueType>
 bool readEnum(const nlohmann::json& json, const std::string& key, ValueType& value, const bool canThrow = false) {
     const auto it = json.find(key);
 
-    if (canThrow)
-    {
-        if (!it.value().is_null())
-        {
+    if (canThrow) {
+        if (!it.value().is_null()) {
             value = ValueType::_from_string_nocase(it->get<std::string>().c_str());
         }
         return true;
     }
-    else
-    {
-        if (it != json.end())
-        {
-            if (!it.value().is_null() && !it->get<std::string>().empty())
-            {
+    else {
+        if (it != json.end()) {
+            if (!it.value().is_null() && !it->get<std::string>().empty()) {
                 value = ValueType::_from_string_nocase(it->get<std::string>().c_str());
                 return true;
             }
-            else
-            {
+            else {
                 return false;
             }
         }
@@ -179,8 +153,7 @@ bool readEnum(const nlohmann::json& json, const std::string& key, ValueType& val
 inline std::string queryStringFromJson(const nlohmann::json& pars) {
     std::string queryStr;
 
-    for (const auto& el : pars.items())
-    {
+    for (const auto& el : pars.items()) {
         queryStr.append(el.key());
         queryStr.append("=");
         std::string val = el.value().dump();
@@ -188,8 +161,7 @@ inline std::string queryStringFromJson(const nlohmann::json& pars) {
         queryStr.append(val);
         queryStr.append("&");
     }
-    if (!queryStr.empty())
-    {
+    if (!queryStr.empty()) {
         queryStr.pop_back();
     }
 

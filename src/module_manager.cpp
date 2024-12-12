@@ -35,10 +35,8 @@ void ModuleManager::start(const std::string& searchPath) {
     if (boost::filesystem::is_regular_file(path))
         path = path.parent_path();
 
-    if (boost::filesystem::exists(path) && boost::filesystem::is_directory(path))
-    {
-        for (auto& entry : boost::filesystem::directory_iterator(path))
-        {
+    if (boost::filesystem::exists(path) && boost::filesystem::is_directory(path)) {
+        for (auto& entry : boost::filesystem::directory_iterator(path)) {
             if (!boost::filesystem::is_regular_file(entry.status()))
                 continue;
 
@@ -48,10 +46,8 @@ void ModuleManager::start(const std::string& searchPath) {
             boost::dll::shared_library lib;
             lib.load(entry.path().c_str(), boost::dll::load_mode::append_decorations);
 
-            if (lib.is_loaded() && lib.has("getModuleFactory"))
-            {
-                if (GetFactoryProc* factoryProcedure = lib.get<GetFactoryProc>("getModuleFactory"))
-                {
+            if (lib.is_loaded() && lib.has("getModuleFactory")) {
+                if (GetFactoryProc* factoryProcedure = lib.get<GetFactoryProc>("getModuleFactory")) {
                     const auto factory = reinterpret_cast<ModuleFactory*>(factoryProcedure());
                     m_moduleFactories.push_back(std::unique_ptr<ModuleFactory>(factory));
                 }
@@ -65,8 +61,7 @@ void ModuleManager::start(const std::string& searchPath) {
 void ModuleManager::stop() {
     std::lock_guard lock(m_mutex);
 
-    for (const auto& entry : m_moduleFactories)
-    {
+    for (const auto& entry : m_moduleFactories) {
         entry->finalize();
     }
 
