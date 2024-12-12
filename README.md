@@ -1,5 +1,7 @@
 # VitaKot C++ Tools Library
 
+A library with various utilities, nothing special, but used in most of my SW.
+
 # Dependencies
 
 Dependencies are not required when building the library, but must be linked in the target application/library if the corresponding

@@ -37,8 +37,7 @@ public:
         std::string classId = boost::typeindex::type_id<T>().pretty_name() +
             boost::typeindex::type_id<decltype(makeFunc)>().pretty_name();
 
-        if (!m_factoryMap.contains(classId))
-        {
+        if (!m_factoryMap.contains(classId)) {
             m_factoryMap.insert_or_assign(classId, makeFunc);
         }
     }
@@ -47,8 +46,7 @@ public:
     void registerClassByName(const std::string& name, const std::function<std::shared_ptr<T>()>& makeFunc) {
         std::lock_guard lock(m_mutex);
 
-        if (!m_factoryMap.contains(name))
-        {
+        if (!m_factoryMap.contains(name)) {
             m_factoryMap.insert_or_assign(name, makeFunc);
         }
     }
@@ -60,8 +58,7 @@ public:
         std::string classId = boost::typeindex::type_id<T>().pretty_name() +
             boost::typeindex::type_id<decltype(makeFunc)>().pretty_name();
 
-        if (!m_factoryMap.contains(classId))
-        {
+        if (!m_factoryMap.contains(classId)) {
             m_factoryMap.insert_or_assign(classId, makeFunc);
         }
     }
@@ -78,14 +75,11 @@ public:
 
         std::function<std::shared_ptr<T>(Args&&... arguments)> makeFunc = nullptr;
 
-        if (it != m_factoryMap.end())
-        {
-            try
-            {
+        if (it != m_factoryMap.end()) {
+            try {
                 makeFunc = boost::any_cast<std::function<std::shared_ptr<T>(Args&&... arguments)>>(it->second);
             }
-            catch (const boost::bad_any_cast&)
-            {
+            catch (const boost::bad_any_cast&) {
                 return nullptr;
             }
 
@@ -103,14 +97,11 @@ public:
 
         std::function<std::shared_ptr<T>(Args&&... arguments)> makeFunc = nullptr;
 
-        if (it != m_factoryMap.end())
-        {
-            try
-            {
+        if (it != m_factoryMap.end()) {
+            try {
                 makeFunc = boost::any_cast<std::function<std::shared_ptr<T>(Args&&... arguments)>>(it->second);
             }
-            catch (const boost::bad_any_cast&)
-            {
+            catch (const boost::bad_any_cast&) {
                 return nullptr;
             }
 
