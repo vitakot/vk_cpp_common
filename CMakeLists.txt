@@ -2,7 +2,12 @@ cmake_minimum_required(VERSION 3.16)
 project(vk_tools)
 
 set(CMAKE_CXX_STANDARD 20)
-find_package(Boost 1.78 REQUIRED)
+
+if(POLICY CMP0167)
+    cmake_policy(SET CMP0167 NEW)
+endif()
+
+find_package(Boost 1.83 REQUIRED)
 
 include_directories(include SYSTEM ${Boost_INCLUDE_DIR})
 
