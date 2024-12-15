@@ -16,7 +16,6 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 #include <sstream>
 
 namespace vk {
-
 static constexpr int SECONDS_PER_MINUTE = 60;
 static constexpr int SECONDS_PER_HOUR = 3600;
 static constexpr int SECONDS_PER_DAY = 86400;
@@ -27,18 +26,18 @@ double systemTimeToVariantTimeMs(const unsigned short year, const unsigned short
                                  const unsigned int msec) {
     int m12 = (month - 14) / 12;
     double dateVal =
-            /* Convert Day/Month/Year to a Julian date - from PostgreSQL */
-            (1461 * (year + 4800 + m12)) / 4 + (367 * (month - 2 - 12 * m12)) / 12 -
-            (3 * ((year + 4900 + m12) / 100)) / 4 + day - 32075
-            - 1757585 /* Convert to + days from 1 Jan 100 AD */
-            - 657434; /* Convert to +/- days from 1 Jan 1899 AD */
+        /* Convert Day/Month/Year to a Julian date - from PostgreSQL */
+        (1461 * (year + 4800 + m12)) / 4 + (367 * (month - 2 - 12 * m12)) / 12 -
+        (3 * ((year + 4900 + m12) / 100)) / 4 + day - 32075
+        - 1757585 /* Convert to + days from 1 Jan 100 AD */
+        - 657434; /* Convert to +/- days from 1 Jan 1899 AD */
     double dateSign = (dateVal < 0.0) ? -1.0 : 1.0;
     dateVal += dateSign * (msec + sec * 1000 + min * 60000 + hour * 3600000) / 86400000.0;
     return dateVal;
 }
 
-size_t strlcpy(char *dst, const char *src, size_t dsize) {
-    const char *osrc = src;
+size_t strlcpy(char* dst, const char* src, size_t dsize) {
+    const char* osrc = src;
     size_t nleft = dsize;
 
     /* Copy as many bytes as will fit. */
@@ -52,15 +51,14 @@ size_t strlcpy(char *dst, const char *src, size_t dsize) {
     /* Not enough room in dst, add NUL and traverse rest of src. */
     if (nleft == 0) {
         if (dsize != 0)
-            *dst = '\0';        /* NUL-terminate dst */
+            *dst = '\0'; /* NUL-terminate dst */
         while (*src++);
     }
 
-    return (src - osrc - 1);    /* count does not include NUL */
+    return (src - osrc - 1); /* count does not include NUL */
 }
 
-std::vector<std::string> splitString(const std::string &s, char delim) {
-
+std::vector<std::string> splitString(const std::string& s, char delim) {
     std::stringstream ss(s);
     std::string item;
     std::vector<std::string> elems;
@@ -78,7 +76,7 @@ inline bool isLeapYear(short year) {
     return (year % 400) == 0;
 }
 
-time_t mkgmtime(const struct tm *ptm) {
+time_t mkgmtime(const struct tm* ptm) {
     time_t secs = 0;
     // tm_year is years since 1900
     int year = ptm->tm_year + 1900;
@@ -100,36 +98,36 @@ time_t mkgmtime(const struct tm *ptm) {
     return secs;
 }
 
-int64_t getTimeStampFromString(const std::string &timeString, const std::string &format) {
+int64_t getTimeStampFromString(const std::string& timeString, const std::string& format) {
     std::tm time{};
     std::istringstream ss(timeString);
     ss >> std::get_time(&time, format.c_str());
     return mkgmtime(&time);
 }
 
-int64_t getTimeStampFromStringWithZone(const std::string &timeString, const std::string &format) {
-	std::istringstream ss(timeString);
-	std::chrono::sys_seconds dt;
-	ss >> date::parse(format, dt);
-	return dt.time_since_epoch().count();
+int64_t getTimeStampFromStringWithZone(const std::string& timeString, const std::string& format) {
+    std::istringstream ss(timeString);
+    std::chrono::sys_seconds dt;
+    ss >> date::parse(format, dt);
+    return dt.time_since_epoch().count();
 }
 
-std::tm getTimeFromString(const std::string &timeString, const std::string &format) {
+std::tm getTimeFromString(const std::string& timeString, const std::string& format) {
     std::tm time{};
     std::istringstream ss(timeString);
     ss >> std::get_time(&time, format.c_str());
     return time;
 }
 
-std::string getDateTimeStringFromTimeStamp(int64_t timeStamp, const std::string &format, bool isMs) {
-
+std::string getDateTimeStringFromTimeStamp(int64_t timeStamp, const std::string& format, bool isMs) {
     std::string retVal;
     std::time_t secsSinceEpoch;
     std::time_t ms;
 
     if (!isMs) {
         secsSinceEpoch = timeStamp;
-    } else {
+    }
+    else {
         secsSinceEpoch = timeStamp / 1000;
         ms = timeStamp % 1000;
     }
@@ -150,7 +148,6 @@ std::string getDateTimeStringFromTimeStamp(int64_t timeStamp, const std::string 
 }
 
 std::string formatDouble(int64_t precision, const double val) {
-
     std::string format = "{:.";
     format.append(std::to_string(precision));
     format.append("f}");
@@ -176,8 +173,7 @@ std::string getHomeDir() {
     return retVal;
 }
 
-bool strCmpCaseIns(const std::string &a, const std::string &b) {
-
+bool strCmpCaseIns(const std::string& a, const std::string& b) {
     return std::equal(a.begin(), a.end(),
                       b.begin(), b.end(),
                       [](char a, char b) {
@@ -185,10 +181,10 @@ bool strCmpCaseIns(const std::string &a, const std::string &b) {
                       });
 }
 
-std::string queryStringFromMap(const std::map<std::string, std::string> &v) {
+std::string queryStringFromMap(const std::map<std::string, std::string>& v) {
     std::string queryStr;
 
-    for (const auto &parameter: v) {
+    for (const auto& parameter : v) {
         queryStr.append(parameter.first);
         queryStr.append("=");
         queryStr.append(parameter.second);
@@ -202,9 +198,8 @@ std::string queryStringFromMap(const std::map<std::string, std::string> &v) {
     return queryStr;
 }
 
-void replaceAll(std::string &s, const std::string &search, const std::string &replace) {
+void replaceAll(std::string& s, const std::string& search, const std::string& replace) {
     for (size_t pos = 0;; pos += replace.length()) {
-
         pos = s.find(search, pos);
 
         if (pos == std::string::npos)
@@ -215,7 +210,7 @@ void replaceAll(std::string &s, const std::string &search, const std::string &re
     }
 }
 
-std::error_code createDirectoryRecursively(const std::string &dirName) {
+std::error_code createDirectoryRecursively(const std::string& dirName) {
     std::error_code err;
     if (!std::filesystem::create_directories(dirName, err)) {
         if (std::filesystem::exists(dirName)) {
@@ -226,12 +221,11 @@ std::error_code createDirectoryRecursively(const std::string &dirName) {
     return {};
 }
 
-std::vector<std::filesystem::path> findFilePaths(const std::string &dirPath, const std::string &extension) {
-
+std::vector<std::filesystem::path> findFilePaths(const std::string& dirPath, const std::string& extension) {
     std::vector<std::filesystem::path> retVal;
     std::regex dataFileFilter(extension);
 
-    for (const auto &entry: std::filesystem::recursive_directory_iterator(dirPath)) {
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(dirPath)) {
         if (!std::filesystem::is_regular_file(entry.status()))
             continue;
 
@@ -243,5 +237,4 @@ std::vector<std::filesystem::path> findFilePaths(const std::string &dirPath, con
 
     return retVal;
 }
-
 }
