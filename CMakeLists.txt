@@ -16,6 +16,8 @@ set(HEADERS include/vk/tools/i_json.h
 set(SOURCES
         src/module_factory.cpp
         src/module_manager.cpp
-        src/id_generator.cpp src/registry.cpp)
+        src/id_generator.cpp
+        src/registry.cpp
+        src/utils.cpp)
 
 add_library(vk_tools ${SOURCES} ${HEADERS})
