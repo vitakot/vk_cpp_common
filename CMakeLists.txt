@@ -3,13 +3,22 @@ project(vk_tools)
 
 set(CMAKE_CXX_STANDARD 20)
 
-if(POLICY CMP0167)
+if (POLICY CMP0167)
     cmake_policy(SET CMP0167 NEW)
-endif()
+endif ()
 
-find_package(Boost 1.83 REQUIRED)
+option(MODULE_MANAGER "Add Module Manager" OFF)
 
-include_directories(include SYSTEM ${Boost_INCLUDE_DIR})
+if (MODULE_MANAGER)
+    find_package(Boost 1.83 REQUIRED COMPONENTS system)
+    include_directories(include SYSTEM ${Boost_INCLUDE_DIR})
+
+    set(SOURCES_M_MANAGER
+            src/module_factory.cpp
+            src/module_manager.cpp)
+else ()
+    include_directories(include)
+endif ()
 
 set(HEADERS include/vk/tools/i_json.h
         include/vk/tools/utils.h
@@ -19,10 +28,13 @@ set(HEADERS include/vk/tools/i_json.h
         include/vk/tools/semaphore.h)
 
 set(SOURCES
-        src/module_factory.cpp
-        src/module_manager.cpp
         src/id_generator.cpp
         src/registry.cpp
         src/utils.cpp)
 
-add_library(vk_tools ${SOURCES} ${HEADERS})
+if (MODULE_MANAGER)
+    add_library(vk_tools ${SOURCES} ${SOURCES_M_MANAGER} ${HEADERS})
+    target_link_libraries(vk_tools Boost::system)
+else ()
+    add_library(vk_tools ${SOURCES} ${HEADERS})
+endif ()

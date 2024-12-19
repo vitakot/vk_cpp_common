@@ -8,9 +8,10 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 */
 
 #include "vk/tools/module_manager.h"
-#include <boost/range/adaptors.hpp>
 #include <boost/dll/import.hpp>
 #include <boost/dll/runtime_symbol_info.hpp>
+#include <regex>
+#include <filesystem>
 
 namespace vk {
 ModuleManager::~ModuleManager() {
@@ -24,23 +25,24 @@ void ModuleManager::start(const std::string& searchPath) {
     m_moduleFactories.clear();
     m_libraries.clear();
 
-    const boost::regex sharedLibraryFilter("\\.dll");
-    boost::filesystem::path path;
+    const std::regex sharedLibraryFilter("\\.dll");
+    std::filesystem::path path;
 
     if (searchPath.empty())
-        path = boost::dll::program_location();
+        path = boost::dll::program_location().c_str();
     else
         path = searchPath;
 
-    if (boost::filesystem::is_regular_file(path))
+    if (std::filesystem::is_regular_file(path))
         path = path.parent_path();
 
-    if (boost::filesystem::exists(path) && boost::filesystem::is_directory(path)) {
-        for (auto& entry : boost::filesystem::directory_iterator(path)) {
-            if (!boost::filesystem::is_regular_file(entry.status()))
+    if (std::filesystem::exists(path) && std::filesystem::is_directory(path)) {
+        for (auto& entry : std::filesystem::directory_iterator(path)) {
+            if (!std::filesystem::is_regular_file(entry.status()))
                 continue;
 
-            if (boost::smatch what; !boost::regex_match(entry.path().extension().string(), what, sharedLibraryFilter))
+            const auto pathStr = entry.path().extension().string();
+            if (std::smatch what; !std::regex_match(pathStr, what, sharedLibraryFilter))
                 continue;
 
             boost::dll::shared_library lib;
