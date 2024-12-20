@@ -6,8 +6,8 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 */
 
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef INCLUDE_VK_UTILS_H
+#define INCLUDE_VK_UTILS_H
 
 #include <chrono>
 #include <string>
@@ -224,4 +224,4 @@ std::error_code createDirectoryRecursively(const std::string& dirName);
 
 std::vector<std::filesystem::path> findFilePaths(const std::string& dirPath, const std::string& extension);
 }
-#endif //UTILS_H
+#endif // INCLUDE_VK_UTILS_H
