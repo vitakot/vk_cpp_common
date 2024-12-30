@@ -9,7 +9,7 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 #ifndef INCLUDE_VK_TOOLS_LOG_UTILS_H
 #define INCLUDE_VK_TOOLS_LOG_UTILS_H
 
-#include <enum.h>
+#include <string>
 #include <functional>
 
 #ifndef STRINGIZE_I
@@ -26,16 +26,16 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 #endif
 
 namespace vk {
-BETTER_ENUM(LogSeverity, std::int32_t,
-            Info,
-            Warning,
-            Critical,
-            Error,
-            Debug,
-            Trace
-)
+enum class LogSeverity : int {
+    Info,
+    Warning,
+    Critical,
+    Error,
+    Debug,
+    Trace
+};
 }
 
-using onLogMessage = std::function<void(vk::LogSeverity severity, const std::string & errmsg)>;
+using onLogMessage = std::function<void(vk::LogSeverity severity, const std::string& errmsg)>;
 
 #endif // INCLUDE_VK_TOOLS_LOG_UTILS_H

@@ -10,6 +10,7 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 #define INCLUDE_VK_TOOLS_JSON_UTILS_H
 
 #include <nlohmann/json.hpp>
+#include <magic_enum.hpp>
 
 namespace vk {
 /**
@@ -28,14 +29,12 @@ bool readValue(const nlohmann::json& json, const std::string& key, ValueType& va
     if (canThrow) {
         if (!it.value().is_null()) {
             value = it.value();
+            return true;
         }
-        return true;
     }
-    else {
-        if (it != json.end()) {
-            if (!it.value().is_null()) {
-                value = it.value();
-            }
+    if (it != json.end()) {
+        if (!it.value().is_null()) {
+            value = it.value();
             return true;
         }
     }
@@ -133,17 +132,48 @@ bool readEnum(const nlohmann::json& json, const std::string& key, ValueType& val
     if (canThrow) {
         if (!it.value().is_null()) {
             value = ValueType::_from_string_nocase(it->get<std::string>().c_str());
+            return true;
         }
-        return true;
+    }
+    if (it != json.end()) {
+        if (!it.value().is_null() && !it->get<std::string>().empty()) {
+            value = ValueType::_from_string_nocase(it->get<std::string>().c_str());
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Helper for reading a Better Enum value (https://github.com/Neargye/magic_enum) from nlohmann::json object.
+ * @tparam ValueType
+ * @param json
+ * @param key
+ * @param value
+ * @param canThrow Function will throw an exception instead of silently ignoring a missing attribute
+ * @return true if succeeded and canThrow parameter is false
+ */
+template <typename ValueType>
+bool readMagicEnum(const nlohmann::json& json, const std::string& key, ValueType& value, const bool canThrow = false) {
+    const auto it = json.find(key);
+
+    if (canThrow) {
+        if (!it.value().is_null()) {
+            const auto v = magic_enum::enum_cast<ValueType>(it->get<std::string>(), magic_enum::case_insensitive);
+            if (v) {
+                value = *v;
+                return true;
+            }
+        }
     }
     else {
         if (it != json.end()) {
             if (!it.value().is_null() && !it->get<std::string>().empty()) {
-                value = ValueType::_from_string_nocase(it->get<std::string>().c_str());
-                return true;
-            }
-            else {
-                return false;
+                const auto v = magic_enum::enum_cast<ValueType>(it->get<std::string>(), magic_enum::case_insensitive);
+                if (v) {
+                    value = *v;
+                    return true;
+                }
             }
         }
     }
