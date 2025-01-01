@@ -25,12 +25,15 @@ set(HEADERS include/vk/tools/i_json.h
         include/vk/tools/log_utils.h
         include/vk/tools/json_utils.h
         include/vk/tools/i_exchange_connector.h
-        include/vk/tools/semaphore.h)
+        include/vk/tools/semaphore.h
+        include/date.h
+        include/base64.h)
 
 set(SOURCES
         src/id_generator.cpp
         src/registry.cpp
-        src/utils.cpp)
+        src/utils.cpp
+        src/base64.cpp)
 
 if (MODULE_MANAGER)
     add_library(vk_tools ${SOURCES} ${SOURCES_M_MANAGER} ${HEADERS})
