@@ -14,6 +14,7 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 #include <boost/dll/alias.hpp>
 #include <nlohmann/json_fwd.hpp>
 #include <vk/tools/log_utils.h>
+#include <magic_enum.hpp>
 
 enum class ExchangeId : std::int32_t {
     BinanceFutures,
@@ -140,7 +141,7 @@ struct BOOST_SYMBOL_VISIBLE IExchangeConnector {
 
     [[nodiscard]] virtual Balance getAccountBalance(const std::string &currency) const = 0;
 
-    [[nodiscard]] FundingRate getLastFundingRate(const std::string &symbol) const;
+    [[nodiscard]] virtual FundingRate getLastFundingRate(const std::string &symbol) const = 0;
 
     [[nodiscard]] virtual std::vector<FundingRate> getFundingRates(const std::string &symbol, std::int64_t startTime,
                                                                    std::int64_t endTime) const = 0;
