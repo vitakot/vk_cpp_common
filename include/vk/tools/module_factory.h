@@ -24,26 +24,26 @@ class ModuleFactory final : public IModuleFactory {
     std::recursive_mutex m_mutex;
 
 public:
-    explicit ModuleFactory(const FactoryInfo& info);
+    explicit ModuleFactory(const FactoryInfo &info);
 
     ~ModuleFactory() override = default;
 
-    void factoryInfo(FactoryInfo& info) const override;
+    void factoryInfo(FactoryInfo &info) const override;
 
-    template <typename T>
-    void registerClass(const std::function<std::shared_ptr<T>()>& makeFunc) {
+    template<typename T>
+    void registerClass(const std::function<std::shared_ptr<T>()> &makeFunc) {
         std::lock_guard lock(m_mutex);
 
         std::string classId = boost::typeindex::type_id<T>().pretty_name() +
-            boost::typeindex::type_id<decltype(makeFunc)>().pretty_name();
+                              boost::typeindex::type_id<decltype(makeFunc)>().pretty_name();
 
         if (!m_factoryMap.contains(classId)) {
             m_factoryMap.insert_or_assign(classId, makeFunc);
         }
     }
 
-    template <typename T>
-    void registerClassByName(const std::string& name, const std::function<std::shared_ptr<T>()>& makeFunc) {
+    template<typename T>
+    void registerClassByName(const std::string &name, const std::function<std::shared_ptr<T>()> &makeFunc) {
         std::lock_guard lock(m_mutex);
 
         if (!m_factoryMap.contains(name)) {
@@ -51,35 +51,34 @@ public:
         }
     }
 
-    template <typename T, typename... Args>
-    void registerClass(const std::function<std::shared_ptr<T>(Args&&... args)>& makeFunc) {
-        std::lock_guard<std::recursive_mutex> lock(m_mutex);
+    template<typename T, typename... Args>
+    void registerClass(const std::function<std::shared_ptr<T>(Args &&... args)> &makeFunc) {
+        std::lock_guard lock(m_mutex);
 
         std::string classId = boost::typeindex::type_id<T>().pretty_name() +
-            boost::typeindex::type_id<decltype(makeFunc)>().pretty_name();
+                              boost::typeindex::type_id<decltype(makeFunc)>().pretty_name();
 
         if (!m_factoryMap.contains(classId)) {
             m_factoryMap.insert_or_assign(classId, makeFunc);
         }
     }
 
-    template <typename T, typename... Args>
-    std::shared_ptr<T> create(Args&&... args) {
+    template<typename T, typename... Args>
+    std::shared_ptr<T> create(Args &&... args) {
         std::lock_guard lock(m_mutex);
 
         const std::string classId = boost::typeindex::type_id<T>().pretty_name() +
-            boost::typeindex::type_id<std::function<std::shared_ptr<T>(Args
-                &&... arguments)>>().pretty_name();
+                                    boost::typeindex::type_id<std::function<std::shared_ptr<T>(Args
+                                        &&... arguments)> >().pretty_name();
 
         const auto it = m_factoryMap.find(classId);
 
-        std::function<std::shared_ptr<T>(Args&&... arguments)> makeFunc = nullptr;
+        std::function<std::shared_ptr<T>(Args &&... arguments)> makeFunc = nullptr;
 
         if (it != m_factoryMap.end()) {
             try {
-                makeFunc = boost::any_cast<std::function<std::shared_ptr<T>(Args&&... arguments)>>(it->second);
-            }
-            catch (const boost::bad_any_cast&) {
+                makeFunc = boost::any_cast<std::function<std::shared_ptr<T>(Args &&... arguments)> >(it->second);
+            } catch (const boost::bad_any_cast &) {
                 return nullptr;
             }
 
@@ -89,19 +88,18 @@ public:
         return nullptr;
     }
 
-    template <typename T, typename... Args>
-    std::shared_ptr<T> createByName(const std::string& name, Args&&... args) {
+    template<typename T, typename... Args>
+    std::shared_ptr<T> createByName(const std::string &name, Args &&... args) {
         std::lock_guard lock(m_mutex);
 
         const auto it = m_factoryMap.find(name);
 
-        std::function<std::shared_ptr<T>(Args&&... arguments)> makeFunc = nullptr;
+        std::function<std::shared_ptr<T>(Args &&... arguments)> makeFunc = nullptr;
 
         if (it != m_factoryMap.end()) {
             try {
-                makeFunc = boost::any_cast<std::function<std::shared_ptr<T>(Args&&... arguments)>>(it->second);
-            }
-            catch (const boost::bad_any_cast&) {
+                makeFunc = boost::any_cast<std::function<std::shared_ptr<T>(Args &&... arguments)> >(it->second);
+            } catch (const boost::bad_any_cast &) {
                 return nullptr;
             }
 
@@ -114,7 +112,7 @@ public:
     void finalize() override;
 };
 
-extern ModuleFactory* g_moduleFactory;
+extern ModuleFactory *g_moduleFactory;
 }
 
 #endif // INCLUDE_VK_TOOLS_MODULE_FACTORY_H
