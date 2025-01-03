@@ -12,6 +12,7 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 #include <boost/dll/runtime_symbol_info.hpp>
 #include <regex>
 #include <filesystem>
+#include <spdlog/spdlog.h>
 
 namespace vk {
 ModuleManager::~ModuleManager() {
@@ -19,13 +20,12 @@ ModuleManager::~ModuleManager() {
     m_libraries.clear();
 }
 
-void ModuleManager::start(const std::string& searchPath) {
+void ModuleManager::start(const std::string &searchPath) {
     std::lock_guard lock(m_mutex);
 
     m_moduleFactories.clear();
     m_libraries.clear();
 
-    const std::regex sharedLibraryFilter("\\.dll");
     std::filesystem::path path;
 
     if (searchPath.empty())
@@ -33,28 +33,36 @@ void ModuleManager::start(const std::string& searchPath) {
     else
         path = searchPath;
 
-    if (std::filesystem::is_regular_file(path))
+    if (is_regular_file(path))
         path = path.parent_path();
 
-    if (std::filesystem::exists(path) && std::filesystem::is_directory(path)) {
-        for (auto& entry : std::filesystem::directory_iterator(path)) {
-            if (!std::filesystem::is_regular_file(entry.status()))
+    if (exists(path) && is_directory(path)) {
+        for (auto &entry: std::filesystem::directory_iterator(path)) {
+            if (!is_regular_file(entry.status()))
                 continue;
 
-            const auto pathStr = entry.path().extension().string();
-            if (std::smatch what; !std::regex_match(pathStr, what, sharedLibraryFilter))
-                continue;
+            if (const auto extensionStr = entry.path().extension().string();
+                extensionStr == ".so" || extensionStr == ".dll") {
+                boost::dll::shared_library lib;
+                lib.load(entry.path().c_str());
 
-            boost::dll::shared_library lib;
-            lib.load(entry.path().c_str(), boost::dll::load_mode::append_decorations);
+                if (lib.is_loaded()) {
+                    spdlog::info("Module library loaded: {}", entry.path().string());
+                    if (GetFactoryProc *factoryProcedure = lib.get<GetFactoryProc>("getModuleFactory")) {
+                        const auto factory = reinterpret_cast<ModuleFactory *>(factoryProcedure());
+                        m_moduleFactories.push_back(std::unique_ptr<ModuleFactory>(factory));
+                        FactoryInfo factoryInfo;
+                        factory->factoryInfo(factoryInfo);
+                        spdlog::info("Module factory loaded: {}, version: ", factoryInfo.m_description,
+                                     factoryInfo.m_version);
 
-            if (lib.is_loaded() && lib.has("getModuleFactory")) {
-                if (GetFactoryProc* factoryProcedure = lib.get<GetFactoryProc>("getModuleFactory")) {
-                    const auto factory = reinterpret_cast<ModuleFactory*>(factoryProcedure());
-                    m_moduleFactories.push_back(std::unique_ptr<ModuleFactory>(factory));
+                        m_libraries.push_back(lib);
+                    } else {
+                        spdlog::error("Module factory failed to load: {}", entry.path().string());
+                    }
+                } else {
+                    spdlog::error("Module library failed to load: {}", entry.path().string());
                 }
-
-                m_libraries.push_back(lib);
             }
         }
     }
@@ -63,7 +71,7 @@ void ModuleManager::start(const std::string& searchPath) {
 void ModuleManager::stop() {
     std::lock_guard lock(m_mutex);
 
-    for (const auto& entry : m_moduleFactories) {
+    for (const auto &entry: m_moduleFactories) {
         entry->finalize();
     }
 
