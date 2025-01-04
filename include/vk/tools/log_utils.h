@@ -11,6 +11,7 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 
 #include <string>
 #include <functional>
+#include <spdlog/spdlog.h>
 
 #ifndef STRINGIZE_I
 #define STRINGIZE_I(x) #x
@@ -37,5 +38,30 @@ enum class LogSeverity : int {
 }
 
 using onLogMessage = std::function<void(vk::LogSeverity severity, const std::string& errmsg)>;
+
+inline void defaultLogFunction(const vk::LogSeverity severity, const std::string& errmsg) {
+    switch (severity) {
+        case vk::LogSeverity::Info:
+#ifdef VERBOSE_LOG
+            spdlog::info(errmsg);
+#endif
+        break;
+        case vk::LogSeverity::Warning:
+            spdlog::warn(errmsg);
+        break;
+        case vk::LogSeverity::Critical:
+            spdlog::critical(errmsg);
+        break;
+        case vk::LogSeverity::Error:
+            spdlog::error(errmsg);
+        break;
+        case vk::LogSeverity::Debug:
+            spdlog::debug(errmsg);
+        break;
+        case vk::LogSeverity::Trace:
+            spdlog::trace(errmsg);
+        break;
+    }
+}
 
 #endif // INCLUDE_VK_TOOLS_LOG_UTILS_H
