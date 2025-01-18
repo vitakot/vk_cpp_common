@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(vk_tools)
+project(vk_common)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -39,8 +39,8 @@ set(SOURCES
         src/base64.cpp)
 
 if (MODULE_MANAGER)
-    add_library(vk_tools ${SOURCES} ${SOURCES_M_MANAGER} ${HEADERS})
-    target_link_libraries(vk_tools Boost::system)
+    add_library(vk_common ${SOURCES} ${SOURCES_M_MANAGER} ${HEADERS})
+    target_link_libraries(vk_common Boost::system)
 else ()
-    add_library(vk_tools ${SOURCES} ${HEADERS})
+    add_library(vk_common ${SOURCES} ${HEADERS})
 endif ()
