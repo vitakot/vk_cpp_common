@@ -44,9 +44,8 @@ template<typename T>
 bool isReady(const std::future<T> &f) {
     if (f.valid()) {
         return f.wait_for(std::chrono::seconds(0)) == std::future_status::ready;
-    } else {
-        return false;
     }
+    return false;
 }
 
 #endif // INCLUDE_VK_UTILS_SEMAPHORE_H
