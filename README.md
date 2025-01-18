@@ -1,6 +1,6 @@
-# VitaKot C++ Tools Library
+# VitaKot C++ Common Library
 
-A library with various utilities, nothing special, but used in most of my SW.
+A library with various interfaces and utilities, nothing special, but used in most of my SW.
 
 # Dependencies
 
