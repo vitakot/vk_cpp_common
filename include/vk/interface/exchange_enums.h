@@ -56,22 +56,25 @@ enum class MarketCategory : std::int32_t {
     Futures
 };
 
+/**
+ * Candle Interval, values are in seconds
+ */
 enum class CandleInterval : std::int32_t {
-    _1m,
-    _3m,
-    _5m,
-    _15m,
-    _30m,
-    _1h,
-    _2h,
-    _4h,
-    _6h,
-    _8h,
-    _12h,
-    _1d,
-    _3d,
-    _1w,
-    _1M
+    _1m = 60,
+    _3m = 180,
+    _5m = 300,
+    _15m = 900,
+    _30m = 1800,
+    _1h = 3600,
+    _2h = 7200,
+    _4h = 14400,
+    _6h = 21600,
+    _8h = 28800,
+    _12h = 43200,
+    _1d = 86400,
+    _3d = 259200,
+    _1w = 604800,
+    _1M = 2592000,
 };
 }
 
