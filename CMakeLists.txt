@@ -20,12 +20,15 @@ else ()
     include_directories(include)
 endif ()
 
-set(HEADERS include/vk/tools/i_json.h
-        include/vk/tools/utils.h
-        include/vk/tools/log_utils.h
-        include/vk/tools/json_utils.h
-        include/vk/tools/i_exchange_connector.h
-        include/vk/tools/semaphore.h
+set(HEADERS
+        include/vk/interface/i_json.h
+        include/vk/interface/i_exchange_connector.h
+        include/vk/interface/i_module_factory.h
+        include/vk/interface/i_exchange_downloader.h
+        include/vk/utils/utils.h
+        include/vk/utils/log_utils.h
+        include/vk/utils/json_utils.h
+        include/vk/utils/semaphore.h
         include/date.h
         include/base64.h)
 

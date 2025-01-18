@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 */
 
-#include "vk/tools/id_generator.h"
+#include "vk/utils/id_generator.h"
 #include <chrono>
 
 namespace vk {

@@ -6,8 +6,8 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 */
 
-#ifndef INCLUDE_VK_TOOLS_REGISTRY_H
-#define INCLUDE_VK_TOOLS_REGISTRY_H
+#ifndef INCLUDE_VK_UTILS_REGISTRY_H
+#define INCLUDE_VK_UTILS_REGISTRY_H
 
 #if defined _WIN32
 #include <windows.h>
@@ -22,4 +22,4 @@ bool readDwordValueRegistry(HKEY hKeyParent, const char *subKey, const char *val
 
 }
 #endif
-#endif // INCLUDE_VK_TOOLS_REGISTRY_H
+#endif // INCLUDE_VK_UTILS_REGISTRY_H

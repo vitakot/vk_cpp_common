@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 */
 
-#include "vk/tools/registry.h"
+#include "vk/utils/registry.h"
 
 namespace vk {
 #if defined _WIN32
