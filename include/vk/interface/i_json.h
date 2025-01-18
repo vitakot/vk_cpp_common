@@ -6,8 +6,8 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2021 Vitezslav Kot <vitezslav.kot@gmail.com>.
 */
 
-#ifndef INCLUDE_VK_TOOLS_I_JSON_H
-#define INCLUDE_VK_TOOLS_I_JSON_H
+#ifndef INCLUDE_VK_INTERFACE_I_JSON_H
+#define INCLUDE_VK_INTERFACE_I_JSON_H
 
 #include "nlohmann/json_fwd.hpp"
 
@@ -30,4 +30,4 @@ struct IJson {
     virtual void fromJson(const nlohmann::json& json) = 0;
 };
 
-#endif // INCLUDE_VK_TOOLS_I_JSON_H
+#endif // INCLUDE_VK_INTERFACE_I_JSON_H

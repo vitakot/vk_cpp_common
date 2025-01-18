@@ -6,8 +6,8 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 */
 
-#ifndef INCLUDE_VK_TOOLS_I_MODULE_FACTORY_H
-#define INCLUDE_VK_TOOLS_I_MODULE_FACTORY_H
+#ifndef INCLUDE_VK_INTERFACE_I_MODULE_FACTORY_H
+#define INCLUDE_VK_INTERFACE_I_MODULE_FACTORY_H
 
 #include <string>
 #include "boost/config.hpp"
@@ -32,4 +32,4 @@ typedef IModuleFactory*(GetFactoryProc)();
 }
 }
 
-#endif // INCLUDE_VK_TOOLS_I_MODULE_FACTORY_H
+#endif // INCLUDE_VK_INTERFACE_I_MODULE_FACTORY_H

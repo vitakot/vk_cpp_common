@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 */
 
-#include "vk/tools/utils.h"
+#include "vk/utils/utils.h"
 #include "date.h"
 #include <fmt/format.h>
 #include <iomanip>

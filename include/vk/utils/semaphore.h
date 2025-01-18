@@ -6,8 +6,8 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 */
 
-#ifndef INCLUDE_VK_TOOLS_SEMAPHORE_H
-#define INCLUDE_VK_TOOLS_SEMAPHORE_H
+#ifndef INCLUDE_VK_UTILS_SEMAPHORE_H
+#define INCLUDE_VK_UTILS_SEMAPHORE_H
 
 #include <mutex>
 #include <future>
@@ -49,4 +49,4 @@ bool isReady(const std::future<T> &f) {
     }
 }
 
-#endif // INCLUDE_VK_TOOLS_SEMAPHORE_H
+#endif // INCLUDE_VK_UTILS_SEMAPHORE_H
