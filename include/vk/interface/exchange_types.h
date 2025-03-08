@@ -72,12 +72,22 @@ struct Balance {
 };
 
 struct FundingRate {
-    std::string m_symbol{};
-    double m_fundingRate{};
-    std::int64_t m_fundingTime{};
+    std::string symbol{};
+    double fundingRate{};
+    std::int64_t fundingTime{};
 
     std::unique_ptr<nlohmann::json> customData{};
 };
+
+struct Ticker {
+    std::string symbol{};
+    std::string displayName{};
+    MarketCategory marketCategory {MarketCategory::Spot};
+    std::string baseAsset{};
+    std::string quoteAsset{};
+    std::string marginAsset{};
+};
+
 }
 
 #endif //INCLUDE_VK_INTERFACE_EXCHANGE_TYPES_H
