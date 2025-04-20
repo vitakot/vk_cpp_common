@@ -6,11 +6,11 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 */
 
-#ifndef INCLUDE_VK_TOOLS_JSON_UTILS_H
-#define INCLUDE_VK_TOOLS_JSON_UTILS_H
+#ifndef INCLUDE_VK_UTILS_JSON_UTILS_H
+#define INCLUDE_VK_UTILS_JSON_UTILS_H
 
 #include <nlohmann/json.hpp>
-#include <magic_enum.hpp>
+#include "magic_enum/magic_enum.hpp"
 
 namespace vk {
 /**
@@ -199,4 +199,4 @@ inline std::string queryStringFromJson(const nlohmann::json& pars) {
 }
 }
 
-#endif // INCLUDE_VK_TOOLS_JSON_UTILS_H
+#endif // INCLUDE_VK_UTILS_JSON_UTILS_H
