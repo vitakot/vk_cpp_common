@@ -53,7 +53,7 @@ void ModuleManager::start(const std::string &searchPath) {
                         m_moduleFactories.push_back(std::unique_ptr<ModuleFactory>(factory));
                         FactoryInfo factoryInfo;
                         factory->factoryInfo(factoryInfo);
-                        spdlog::info("Module factory loaded: {}, version: ", factoryInfo.m_description,
+                        spdlog::info("Module factory loaded: {}, version: {}", factoryInfo.m_description,
                                      factoryInfo.m_version);
 
                         m_libraries.push_back(lib);
