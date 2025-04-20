@@ -10,7 +10,7 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 #define INCLUDE_VK_UTILS_JSON_UTILS_H
 
 #include <nlohmann/json.hpp>
-#include "magic_enum/magic_enum.hpp"
+#include "magic_enum.hpp"
 
 namespace vk {
 /**
