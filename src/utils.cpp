@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 */
 
-#include "vk/tools/utils.h"
+#include "vk/utils/utils.h"
 #include "date.h"
 #include <fmt/format.h>
 #include <iomanip>
@@ -24,19 +24,19 @@ static const int DAYS_OF_MONTH[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30
 double systemTimeToVariantTimeMs(const unsigned short year, const unsigned short month, const unsigned short day,
                                  const unsigned short hour, const unsigned short min, const unsigned short sec,
                                  const unsigned int msec) {
-    int m12 = (month - 14) / 12;
+    const int m12 = (month - 14) / 12;
     double dateVal =
         /* Convert Day/Month/Year to a Julian date - from PostgreSQL */
         (1461 * (year + 4800 + m12)) / 4 + (367 * (month - 2 - 12 * m12)) / 12 -
         (3 * ((year + 4900 + m12) / 100)) / 4 + day - 32075
         - 1757585 /* Convert to + days from 1 Jan 100 AD */
         - 657434; /* Convert to +/- days from 1 Jan 1899 AD */
-    double dateSign = (dateVal < 0.0) ? -1.0 : 1.0;
+    const double dateSign = dateVal < 0.0 ? -1.0 : 1.0;
     dateVal += dateSign * (msec + sec * 1000 + min * 60000 + hour * 3600000) / 86400000.0;
     return dateVal;
 }
 
-size_t strlcpy(char* dst, const char* src, size_t dsize) {
+size_t strlcpy(char* dst, const char* src, const size_t dsize) {
     const char* osrc = src;
     size_t nleft = dsize;
 
@@ -55,10 +55,10 @@ size_t strlcpy(char* dst, const char* src, size_t dsize) {
         while (*src++);
     }
 
-    return (src - osrc - 1); /* count does not include NUL */
+    return src - osrc - 1; /* count does not include NUL */
 }
 
-std::vector<std::string> splitString(const std::string& s, char delim) {
+std::vector<std::string> splitString(const std::string& s, const char delim) {
     std::stringstream ss(s);
     std::string item;
     std::vector<std::string> elems;
@@ -70,18 +70,18 @@ std::vector<std::string> splitString(const std::string& s, char delim) {
     return elems;
 }
 
-inline bool isLeapYear(short year) {
+inline bool isLeapYear(const short year) {
     if (year % 4 != 0) return false;
     if (year % 100 != 0) return true;
-    return (year % 400) == 0;
+    return year % 400 == 0;
 }
 
-time_t mkgmtime(const struct tm* ptm) {
+time_t mkgmtime(const tm* ptm) {
     time_t secs = 0;
     // tm_year is years since 1900
-    int year = ptm->tm_year + 1900;
+    const int year = ptm->tm_year + 1900;
     for (int y = 1970; y < year; ++y) {
-        secs += (isLeapYear(y) ? 366 : 365) * SECONDS_PER_DAY;
+        secs += (isLeapYear(static_cast<short>(y)) ? 366 : 365) * SECONDS_PER_DAY;
     }
     // tm_mon is month from 0..11
     for (int m = 0; m < ptm->tm_mon; ++m) {
@@ -119,10 +119,10 @@ std::tm getTimeFromString(const std::string& timeString, const std::string& form
     return time;
 }
 
-std::string getDateTimeStringFromTimeStamp(int64_t timeStamp, const std::string& format, bool isMs) {
+std::string getDateTimeStringFromTimeStamp(const int64_t timeStamp, const std::string& format, const bool isMs) {
     std::string retVal;
     std::time_t secsSinceEpoch;
-    std::time_t ms;
+    std::time_t ms = 0;
 
     if (!isMs) {
         secsSinceEpoch = timeStamp;
@@ -147,7 +147,7 @@ std::string getDateTimeStringFromTimeStamp(int64_t timeStamp, const std::string&
     return retVal;
 }
 
-std::string formatDouble(int64_t precision, const double val) {
+std::string formatDouble(const int64_t precision, const double val) {
     std::string format = "{:.";
     format.append(std::to_string(precision));
     format.append("f}");
@@ -174,20 +174,19 @@ std::string getHomeDir() {
 }
 
 bool strCmpCaseIns(const std::string& a, const std::string& b) {
-    return std::equal(a.begin(), a.end(),
-                      b.begin(), b.end(),
-                      [](char a, char b) {
-                          return tolower(a) == tolower(b);
-                      });
+    return std::ranges::equal(a, b,
+                              [](const char _a, const char _b) {
+                                  return tolower(_a) == tolower(_b);
+                              });
 }
 
 std::string queryStringFromMap(const std::map<std::string, std::string>& v) {
     std::string queryStr;
 
-    for (const auto& parameter : v) {
-        queryStr.append(parameter.first);
+    for (const auto& [fst, snd] : v) {
+        queryStr.append(fst);
         queryStr.append("=");
-        queryStr.append(parameter.second);
+        queryStr.append(snd);
         queryStr.append("&");
     }
 
@@ -211,8 +210,7 @@ void replaceAll(std::string& s, const std::string& search, const std::string& re
 }
 
 std::error_code createDirectoryRecursively(const std::string& dirName) {
-    std::error_code err;
-    if (!std::filesystem::create_directories(dirName, err)) {
+    if (std::error_code err; !std::filesystem::create_directories(dirName, err)) {
         if (std::filesystem::exists(dirName)) {
             return {};
         }
@@ -223,10 +221,10 @@ std::error_code createDirectoryRecursively(const std::string& dirName) {
 
 std::vector<std::filesystem::path> findFilePaths(const std::string& dirPath, const std::string& extension) {
     std::vector<std::filesystem::path> retVal;
-    std::regex dataFileFilter(extension);
+    const std::regex dataFileFilter(extension);
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(dirPath)) {
-        if (!std::filesystem::is_regular_file(entry.status()))
+        if (!is_regular_file(entry.status()))
             continue;
 
         if (!std::regex_match(entry.path().extension().string(), dataFileFilter))

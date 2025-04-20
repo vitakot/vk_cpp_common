@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 */
 
-#include "vk/tools/module_factory.h"
+#include "vk/common/module_factory.h"
 
 namespace vk {
 ModuleFactory *g_moduleFactory = nullptr;
