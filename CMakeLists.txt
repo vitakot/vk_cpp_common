@@ -3,6 +3,12 @@ project(vk_common)
 
 set(CMAKE_CXX_STANDARD 20)
 
+if (MSVC)
+    add_definitions(-D_WIN32_WINNT=0x0A00 /bigobj)
+else ()
+    add_definitions(-fPIC)
+endif ()
+
 if (POLICY CMP0167)
     cmake_policy(SET CMP0167 NEW)
 endif ()
