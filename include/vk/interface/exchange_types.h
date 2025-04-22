@@ -11,7 +11,7 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 
 #include "exchange_enums.h"
 #include <string>
-#include <nlohmann/json_fwd.hpp>
+#include <nlohmann/json.hpp>
 
 namespace vk {
 struct Order {
@@ -36,7 +36,7 @@ struct Order {
     /// Client order id
     std::string clientOrderId{};
 
-    std::unique_ptr<nlohmann::json> customData{};
+    nlohmann::json customData{};
 };
 
 struct Trade {
@@ -52,7 +52,7 @@ struct Trade {
     /// Order status - e.g. OrderStatus::New
     OrderStatus orderStatus{OrderStatus::New};
 
-    std::unique_ptr<nlohmann::json> customData{};
+    nlohmann::json customData{};
 };
 
 struct TickerPrice {
@@ -62,13 +62,13 @@ struct TickerPrice {
     double askQty{};
     std::int64_t time{};
 
-    std::unique_ptr<nlohmann::json> customData{};
+    nlohmann::json customData{};
 };
 
 struct Balance {
     double balance{};
 
-    std::unique_ptr<nlohmann::json> customData{};
+    nlohmann::json customData{};
 };
 
 struct FundingRate {
@@ -76,7 +76,7 @@ struct FundingRate {
     double fundingRate{};
     std::int64_t fundingTime{};
 
-    std::unique_ptr<nlohmann::json> customData{};
+    nlohmann::json customData{};
 };
 
 struct Ticker {

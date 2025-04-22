@@ -32,13 +32,30 @@ struct BOOST_SYMBOL_VISIBLE IExchangeConnector {
 
     [[nodiscard]] virtual Balance getAccountBalance(const std::string& currency) const = 0;
 
-    [[nodiscard]] virtual FundingRate getLastFundingRate(const std::string& symbol) const = 0;
+    /**
+     * Get funding rate for given symbol
+     * @param symbol
+     * @return
+     */
+    [[nodiscard]] virtual FundingRate getFundingRate(const std::string& symbol) const = 0;
 
-    [[nodiscard]] virtual std::vector<FundingRate> getFundingRates(const std::string& symbol, std::int64_t startTime,
-                                                                   std::int64_t endTime) const = 0;
+    /**
+     * Get funding rates for all available symbols
+     * @return
+     */
+    [[nodiscard]] virtual std::vector<FundingRate> getFundingRates() const = 0;
 
+    /**
+     * Get symbol info
+     * @param symbol
+     * @return
+     */
     [[nodiscard]] virtual std::vector<Ticker> getTickerInfo(const std::string& symbol) const = 0;
 
+    /**
+     * Get server Unix time
+     * @return
+     */
     [[nodiscard]] virtual std::int64_t getServerTime() const = 0;
 };
 }
