@@ -117,6 +117,27 @@ inline int64_t readStringAsInt64(const nlohmann::json& json, const std::string& 
 }
 
 /**
+ * Helper for reading a decimal value from nlohmann::json object.
+ * @param json
+ * @param key
+ * @param defaultVal
+ * @return decimal value
+ */
+inline boost::multiprecision::cpp_dec_float_50 readDecimalValue(const nlohmann::json& json,
+                                                                const std::string& key,
+                                                                boost::multiprecision::cpp_dec_float_50 defaultVal =
+                                                                    boost::multiprecision::cpp_dec_float_50("0")) {
+    if (const auto it = json.find(key); it != json.end()) {
+        if (!it.value().is_null() && it->is_string() && !it->get<std::string>().empty()) {
+            return boost::multiprecision::cpp_dec_float_50(it->get<std::string>());
+        }
+        return defaultVal;
+    }
+
+    return false;
+}
+
+/**
  * Helper for reading a Better Enum value (http://github.com/aantron/better-enums) from nlohmann::json object.
  * @tparam ValueType
  * @param json
