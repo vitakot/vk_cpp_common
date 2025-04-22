@@ -39,7 +39,7 @@ struct BOOST_SYMBOL_VISIBLE IExchangeConnector {
 
     [[nodiscard]] virtual std::vector<Ticker> getTickerInfo(const std::string& symbol) const = 0;
 
-    [[nodiscard]] virtual std::int64_t getPingTime() const = 0;
+    [[nodiscard]] virtual std::int64_t getServerTime() const = 0;
 };
 }
 #endif // INCLUDE_VK_INTERFACE_I_EXCHANGE_CONNECTOR_H
