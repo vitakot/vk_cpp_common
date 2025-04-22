@@ -20,7 +20,7 @@ ModuleManager::~ModuleManager() {
     m_libraries.clear();
 }
 
-void ModuleManager::start(const std::string &searchPath) {
+void ModuleManager::start(const std::string& searchPath) {
     std::lock_guard lock(m_mutex);
 
     m_moduleFactories.clear();
@@ -37,7 +37,7 @@ void ModuleManager::start(const std::string &searchPath) {
         path = path.parent_path();
 
     if (exists(path) && is_directory(path)) {
-        for (auto &entry: std::filesystem::directory_iterator(path)) {
+        for (auto& entry : std::filesystem::directory_iterator(path)) {
             if (!is_regular_file(entry.status()))
                 continue;
 
@@ -48,8 +48,8 @@ void ModuleManager::start(const std::string &searchPath) {
 
                 if (lib.is_loaded()) {
                     spdlog::info("Module library loaded: {}", entry.path().string());
-                    if (GetFactoryProc *factoryProcedure = lib.get<GetFactoryProc>("getModuleFactory")) {
-                        const auto factory = reinterpret_cast<ModuleFactory *>(factoryProcedure());
+                    if (GetFactoryProc* factoryProcedure = lib.get<GetFactoryProc>("getModuleFactory")) {
+                        const auto factory = reinterpret_cast<ModuleFactory*>(factoryProcedure());
                         m_moduleFactories.push_back(std::unique_ptr<ModuleFactory>(factory));
                         FactoryInfo factoryInfo;
                         factory->factoryInfo(factoryInfo);
@@ -57,10 +57,12 @@ void ModuleManager::start(const std::string &searchPath) {
                                      factoryInfo.m_version);
 
                         m_libraries.push_back(lib);
-                    } else {
+                    }
+                    else {
                         spdlog::error("Module factory failed to load: {}", entry.path().string());
                     }
-                } else {
+                }
+                else {
                     spdlog::error("Module library failed to load: {}", entry.path().string());
                 }
             }
@@ -71,10 +73,22 @@ void ModuleManager::start(const std::string &searchPath) {
 void ModuleManager::stop() {
     std::lock_guard lock(m_mutex);
 
-    for (const auto &entry: m_moduleFactories) {
+    for (const auto& entry : m_moduleFactories) {
         entry->finalize();
     }
 
     m_moduleFactories.clear();
+}
+
+std::vector<FactoryInfo> ModuleManager::getFactoriesInfo() const {
+    std::vector<FactoryInfo> retVal;
+
+    for (const auto& entry : m_moduleFactories) {
+        FactoryInfo factoryInfo;
+        entry->factoryInfo(factoryInfo);
+        retVal.push_back(factoryInfo);
+    }
+
+    return retVal;
 }
 }
