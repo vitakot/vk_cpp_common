@@ -9,10 +9,8 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 #ifndef INCLUDE_VK_INTERFACE_I_EXCHANGE_CONNECTOR_H
 #define INCLUDE_VK_INTERFACE_I_EXCHANGE_CONNECTOR_H
 
-#include "exchange_enums.h"
 #include "exchange_types.h"
 #include <string>
-#include <boost/config.hpp>
 #include <boost/dll/alias.hpp>
 #include <vk/utils/log_utils.h>
 
@@ -40,6 +38,8 @@ struct BOOST_SYMBOL_VISIBLE IExchangeConnector {
                                                                    std::int64_t endTime) const = 0;
 
     [[nodiscard]] virtual std::vector<Ticker> getTickerInfo(const std::string& symbol) const = 0;
+
+    [[nodiscard]] virtual std::int64_t getPingTime() const = 0;
 };
 }
 #endif // INCLUDE_VK_INTERFACE_I_EXCHANGE_CONNECTOR_H
