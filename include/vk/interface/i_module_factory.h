@@ -14,8 +14,8 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 
 namespace vk {
 struct FactoryInfo {
+    std::string m_id;
     std::string m_description;
-    std::string m_version;
 };
 
 struct IModuleFactory {
