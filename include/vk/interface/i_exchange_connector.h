@@ -18,43 +18,74 @@ namespace vk {
 struct BOOST_SYMBOL_VISIBLE IExchangeConnector {
     virtual ~IExchangeConnector() = default;
 
+    /**
+     * Returns version of Exchange connector
+     * @return version string i.e. 1.0.0
+     */
     [[nodiscard]] virtual std::string version() const = 0;
 
-    [[nodiscard]] virtual std::string name() const = 0;
+    /**
+     * Returns Exchange ID i.e. name of the CEX, it must correspond to ExchangeId enum!
+     * @return Exchange ID string
+     */
+    [[nodiscard]] virtual std::string exchangeId() const = 0;
 
+    /**
+     * Install logger callback
+     * @param onLogMessageCB
+     */
     virtual void setLoggerCallback(const onLogMessage& onLogMessageCB) = 0;
 
+    /**
+     * Login to exchange - for access to account related functions (order, balance...)
+     * @param credentials - ApiKey, ApiSecret, PassPhrase (mostly optional)
+     */
     virtual void login(const std::tuple<std::string, std::string, std::string>& credentials) = 0;
 
+    /**
+     * Place order on exchange, requires login using credentials
+     * @param order
+     * @return Trade structure with order result/state
+     */
     virtual Trade placeOrder(const Order& order) = 0;
 
-    [[nodiscard]] virtual TickerPrice getTickerPrice(const std::string& symbol) const = 0;
-
+    /**
+     * Get Account balance, requires login using credentials
+     * @param currency
+     * @return Balance structure
+     */
     [[nodiscard]] virtual Balance getAccountBalance(const std::string& currency) const = 0;
 
     /**
      * Get funding rate for given symbol
      * @param symbol
-     * @return
+     * @return FundingRate structure
      */
     [[nodiscard]] virtual FundingRate getFundingRate(const std::string& symbol) const = 0;
 
     /**
      * Get funding rates for all available symbols
-     * @return
+     * @return vector of FundingRate structures
      */
     [[nodiscard]] virtual std::vector<FundingRate> getFundingRates() const = 0;
 
     /**
+     * Get ticker price for give symbol
+     * @param symbol
+     * @return TickerPrice structure
+     */
+    [[nodiscard]] virtual TickerPrice getTickerPrice(const std::string& symbol) const = 0;
+
+    /**
      * Get symbol info
      * @param symbol
-     * @return
+     * @return vector of Ticker structures
      */
     [[nodiscard]] virtual std::vector<Ticker> getTickerInfo(const std::string& symbol) const = 0;
 
     /**
-     * Get server Unix time
-     * @return
+     * Get server Unix time in ms
+     * @return timestamp in ms
      */
     [[nodiscard]] virtual std::int64_t getServerTime() const = 0;
 };
