@@ -9,10 +9,12 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 #ifndef INCLUDE_VK_INTERFACE_I_EXCHANGE_CONNECTOR_H
 #define INCLUDE_VK_INTERFACE_I_EXCHANGE_CONNECTOR_H
 
+#include <vk/utils/log_utils.h>
+#include <vk/utils/semaphore.h>
+#include <future>
 #include "exchange_types.h"
 #include <string>
 #include <boost/dll/alias.hpp>
-#include <vk/utils/log_utils.h>
 
 namespace vk {
 struct BOOST_SYMBOL_VISIBLE IExchangeConnector {
@@ -89,5 +91,30 @@ struct BOOST_SYMBOL_VISIBLE IExchangeConnector {
      */
     [[nodiscard]] virtual std::int64_t getServerTime() const = 0;
 };
+
+template <typename R, typename T, typename... Args>
+auto execute(const std::map<ExchangeId, std::shared_ptr<IExchangeConnector>>& exchanges, T method, Args&&... args) {
+    std::vector<std::future<std::pair<ExchangeId, R>>> futures;
+    std::map<ExchangeId, R> results;
+
+    for (const auto& val : exchanges) {
+        futures.push_back(std::async(std::launch::async, [val, method](Args&&... a) {
+            std::pair<ExchangeId, R> retVal;
+            retVal.first = val.first;
+            retVal.second = (val.second.get()->*method)(std::forward<Args>(a)...);
+            return retVal;
+        }, std::forward<Args>(args)...));
+    }
+
+    do {
+        for (auto& future : futures) {
+            if (isReady(future)) {
+                results.insert(future.get());
+            }
+        }
+    }
+    while (results.size() < futures.size());
+    return results;
+}
 }
 #endif // INCLUDE_VK_INTERFACE_I_EXCHANGE_CONNECTOR_H
