@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.20)
 project(vk_common)
 
 set(CMAKE_CXX_STANDARD 20)
 
 if (MSVC)
-    add_definitions(-D_WIN32_WINNT=0x0A00 /bigobj)
+    add_definitions(-D_WIN32_WINNT=0x0A00 /bigobj /utf-8)
 else ()
     add_definitions(-fPIC)
 endif ()
