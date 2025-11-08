@@ -149,6 +149,7 @@ std::tm getTimeFromString(const std::string& timeString, const std::string& form
  * A helper for converting Unix timestamp (seconds from epoch) into date-time strings
  * @param timeStamp
  * @param format
+ * @param isMs
  * @return
  */
 std::string getDateTimeStringFromTimeStamp(int64_t timeStamp, const std::string& format, bool isMs = false);
@@ -156,7 +157,7 @@ std::string getDateTimeStringFromTimeStamp(int64_t timeStamp, const std::string&
 /**
  * Convert double into string with given precision
  * @param precision
- * @param quantity
+ * @param val
  * @return
  */
 std::string formatDouble(int64_t precision, double val);
