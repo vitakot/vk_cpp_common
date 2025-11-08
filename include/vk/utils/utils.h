@@ -11,7 +11,7 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 
 #include <chrono>
 #include <string>
-#include <fmt/core.h>
+#include <spdlog/fmt/ostr.h>
 #include <vector>
 #include <map>
 #include <filesystem>
