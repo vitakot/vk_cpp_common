@@ -8,7 +8,7 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 
 #include "vk/utils/utils.h"
 #include "date.h"
-#include <fmt/format.h>
+#include <spdlog/fmt/ostr.h>
 #include <iomanip>
 #include <map>
 #include <filesystem>
