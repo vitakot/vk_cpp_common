@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.30)
 project(vk_common)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -26,6 +26,8 @@ else ()
     include_directories(include)
 endif ()
 
+find_package(spdlog CONFIG REQUIRED)
+
 set(HEADERS
         include/vk/interface/i_json.h
         include/vk/interface/i_exchange_connector.h
@@ -46,7 +48,8 @@ set(SOURCES
 
 if (MODULE_MANAGER)
     add_library(vk_common ${SOURCES} ${SOURCES_M_MANAGER} ${HEADERS})
-    target_link_libraries(vk_common Boost::system)
+    target_link_libraries(vk_common Boost::system spdlog::spdlog_header_only)
 else ()
     add_library(vk_common ${SOURCES} ${HEADERS})
+    target_link_libraries(vk_common spdlog::spdlog_header_only)
 endif ()
