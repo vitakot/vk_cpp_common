@@ -16,7 +16,7 @@ endif ()
 option(MODULE_MANAGER "Add Module Manager" OFF)
 
 if (MODULE_MANAGER)
-    find_package(Boost 1.83 REQUIRED COMPONENTS system)
+    find_package(Boost 1.83 REQUIRED COMPONENTS system filesystem)
     include_directories(include SYSTEM ${Boost_INCLUDE_DIR})
 
     set(SOURCES_M_MANAGER
@@ -48,7 +48,7 @@ set(SOURCES
 
 if (MODULE_MANAGER)
     add_library(vk_common ${SOURCES} ${SOURCES_M_MANAGER} ${HEADERS})
-    target_link_libraries(vk_common Boost::system spdlog::spdlog_header_only)
+    target_link_libraries(vk_common Boost::system Boost::filesystem spdlog::spdlog_header_only)
 else ()
     add_library(vk_common ${SOURCES} ${HEADERS})
     target_link_libraries(vk_common spdlog::spdlog_header_only)
