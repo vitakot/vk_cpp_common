@@ -16,7 +16,7 @@ endif ()
 option(MODULE_MANAGER "Add Module Manager" OFF)
 
 if (MODULE_MANAGER)
-    find_package(Boost 1.83 REQUIRED COMPONENTS system filesystem)
+    find_package(Boost 1.88 REQUIRED COMPONENTS system filesystem)
     include_directories(include SYSTEM ${Boost_INCLUDE_DIR})
 
     set(SOURCES_M_MANAGER
