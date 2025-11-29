@@ -155,6 +155,13 @@ std::tm getTimeFromString(const std::string& timeString, const std::string& form
 std::string getDateTimeStringFromTimeStamp(int64_t timeStamp, const std::string& format, bool isMs = false);
 
 /**
+ * Convert ISO 8601 date string to milliseconds. Format: "2025-11-29T20:30:13.873Z"
+ * @param dateStr
+ * @return Unix time stamp in ms
+ */
+std::int64_t convertISOToMilliseconds(const std::string& dateStr);
+
+/**
  * Convert double into string with given precision
  * @param precision
  * @param val
@@ -224,5 +231,6 @@ void replaceAll(std::string& s, const std::string& search, const std::string& re
 std::error_code createDirectoryRecursively(const std::string& dirName);
 
 std::vector<std::filesystem::path> findFilePaths(const std::string& dirPath, const std::string& extension);
+
 }
 #endif // INCLUDE_VK_UTILS_H
