@@ -26,18 +26,18 @@ double systemTimeToVariantTimeMs(const unsigned short year, const unsigned short
                                  const unsigned int msec) {
     const int m12 = (month - 14) / 12;
     double dateVal =
-        /* Convert Day/Month/Year to a Julian date - from PostgreSQL */
-        (1461 * (year + 4800 + m12)) / 4 + (367 * (month - 2 - 12 * m12)) / 12 -
-        (3 * ((year + 4900 + m12) / 100)) / 4 + day - 32075
-        - 1757585 /* Convert to + days from 1 Jan 100 AD */
-        - 657434; /* Convert to +/- days from 1 Jan 1899 AD */
+            /* Convert Day/Month/Year to a Julian date - from PostgreSQL */
+            (1461 * (year + 4800 + m12)) / 4 + (367 * (month - 2 - 12 * m12)) / 12 -
+            (3 * ((year + 4900 + m12) / 100)) / 4 + day - 32075
+            - 1757585 /* Convert to + days from 1 Jan 100 AD */
+            - 657434; /* Convert to +/- days from 1 Jan 1899 AD */
     const double dateSign = dateVal < 0.0 ? -1.0 : 1.0;
     dateVal += dateSign * (msec + sec * 1000 + min * 60000 + hour * 3600000) / 86400000.0;
     return dateVal;
 }
 
-size_t strlcpy(char* dst, const char* src, const size_t dsize) {
-    const char* osrc = src;
+size_t strlcpy(char *dst, const char *src, const size_t dsize) {
+    const char *osrc = src;
     size_t nleft = dsize;
 
     /* Copy as many bytes as will fit. */
@@ -58,7 +58,7 @@ size_t strlcpy(char* dst, const char* src, const size_t dsize) {
     return src - osrc - 1; /* count does not include NUL */
 }
 
-std::vector<std::string> splitString(const std::string& s, const char delim) {
+std::vector<std::string> splitString(const std::string &s, const char delim) {
     std::stringstream ss(s);
     std::string item;
     std::vector<std::string> elems;
@@ -76,7 +76,7 @@ inline bool isLeapYear(const short year) {
     return year % 400 == 0;
 }
 
-time_t mkgmtime(const tm* ptm) {
+time_t mkgmtime(const tm *ptm) {
     time_t secs = 0;
     // tm_year is years since 1900
     const int year = ptm->tm_year + 1900;
@@ -98,36 +98,35 @@ time_t mkgmtime(const tm* ptm) {
     return secs;
 }
 
-int64_t getTimeStampFromString(const std::string& timeString, const std::string& format) {
+int64_t getTimeStampFromString(const std::string &timeString, const std::string &format) {
     std::tm time{};
     std::istringstream ss(timeString);
     ss >> std::get_time(&time, format.c_str());
     return mkgmtime(&time);
 }
 
-int64_t getTimeStampFromStringWithZone(const std::string& timeString, const std::string& format) {
+int64_t getTimeStampFromStringWithZone(const std::string &timeString, const std::string &format) {
     std::istringstream ss(timeString);
     std::chrono::sys_seconds dt;
     ss >> date::parse(format, dt);
     return dt.time_since_epoch().count();
 }
 
-std::tm getTimeFromString(const std::string& timeString, const std::string& format) {
+std::tm getTimeFromString(const std::string &timeString, const std::string &format) {
     std::tm time{};
     std::istringstream ss(timeString);
     ss >> std::get_time(&time, format.c_str());
     return time;
 }
 
-std::string getDateTimeStringFromTimeStamp(const int64_t timeStamp, const std::string& format, const bool isMs) {
+std::string getDateTimeStringFromTimeStamp(const int64_t timeStamp, const std::string &format, const bool isMs) {
     std::string retVal;
     std::time_t secsSinceEpoch;
     std::time_t ms = 0;
 
     if (!isMs) {
         secsSinceEpoch = timeStamp;
-    }
-    else {
+    } else {
         secsSinceEpoch = timeStamp / 1000;
         ms = timeStamp % 1000;
     }
@@ -173,17 +172,17 @@ std::string getHomeDir() {
     return retVal;
 }
 
-bool strCmpCaseIns(const std::string& a, const std::string& b) {
+bool strCmpCaseIns(const std::string &a, const std::string &b) {
     return std::ranges::equal(a, b,
                               [](const char _a, const char _b) {
                                   return tolower(_a) == tolower(_b);
                               });
 }
 
-std::string queryStringFromMap(const std::map<std::string, std::string>& v) {
+std::string queryStringFromMap(const std::map<std::string, std::string> &v) {
     std::string queryStr;
 
-    for (const auto& [fst, snd] : v) {
+    for (const auto &[fst, snd]: v) {
         queryStr.append(fst);
         queryStr.append("=");
         queryStr.append(snd);
@@ -197,7 +196,7 @@ std::string queryStringFromMap(const std::map<std::string, std::string>& v) {
     return queryStr;
 }
 
-void replaceAll(std::string& s, const std::string& search, const std::string& replace) {
+void replaceAll(std::string &s, const std::string &search, const std::string &replace) {
     for (size_t pos = 0;; pos += replace.length()) {
         pos = s.find(search, pos);
 
@@ -209,7 +208,7 @@ void replaceAll(std::string& s, const std::string& search, const std::string& re
     }
 }
 
-std::error_code createDirectoryRecursively(const std::string& dirName) {
+std::error_code createDirectoryRecursively(const std::string &dirName) {
     if (std::error_code err; !std::filesystem::create_directories(dirName, err)) {
         if (std::filesystem::exists(dirName)) {
             return {};
@@ -219,11 +218,11 @@ std::error_code createDirectoryRecursively(const std::string& dirName) {
     return {};
 }
 
-std::vector<std::filesystem::path> findFilePaths(const std::string& dirPath, const std::string& extension) {
+std::vector<std::filesystem::path> findFilePaths(const std::string &dirPath, const std::string &extension) {
     std::vector<std::filesystem::path> retVal;
     const std::regex dataFileFilter(extension);
 
-    for (const auto& entry : std::filesystem::recursive_directory_iterator(dirPath)) {
+    for (const auto &entry: std::filesystem::recursive_directory_iterator(dirPath)) {
         if (!is_regular_file(entry.status()))
             continue;
 
@@ -234,5 +233,31 @@ std::vector<std::filesystem::path> findFilePaths(const std::string& dirPath, con
     }
 
     return retVal;
+}
+
+std::int64_t convertISOToMilliseconds(const std::string &dateStr) {
+
+    int y, m, d, h, min, s, ms;
+
+    if (std::sscanf(dateStr.c_str(), "%d-%d-%dT%d:%d:%d.%dZ", &y, &m, &d, &h, &min, &s, &ms) != 7) {
+        throw std::runtime_error(fmt::format("Error parsing date string: {}", dateStr));
+    }
+
+    std::tm tm = {};
+    tm.tm_year = y - 1900;
+    tm.tm_mon = m - 1;
+    tm.tm_mday = d;
+    tm.tm_hour = h;
+    tm.tm_min = min;
+    tm.tm_sec = s;
+    tm.tm_isdst = 0; // UTC
+
+#ifdef _WIN32
+    const time_t t = _mkgmtime(&tm);
+#else
+    const time_t t = timegm(&tm);
+#endif
+
+    return t * 1000 + ms;
 }
 }
