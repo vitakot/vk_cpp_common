@@ -185,7 +185,7 @@ int sgn(T val) {
 */
 
 template <typename... Args>
-std::string dyna_print(std::string_view rt_fmt_str, Args&&... args) {
+std::string dyna_print(const std::string_view rt_fmt_str, Args&&... args) {
     return fmt::vformat(rt_fmt_str, fmt::make_format_args(args...));
 }
 
