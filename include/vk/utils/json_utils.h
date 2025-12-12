@@ -11,12 +11,7 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 
 #include <nlohmann/json.hpp>
 #include <boost/multiprecision/cpp_dec_float.hpp>
-
-#ifdef _WIN32
 #include "magic_enum/magic_enum.hpp"
-#else
-#include "magic_enum.hpp"
-#endif
 
 namespace vk {
 /**
