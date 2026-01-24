@@ -26,7 +26,8 @@ struct IExchangeDownloader {
                                   const std::vector<std::string>& symbols,
                                   CandleInterval candleInterval,
                                   const onSymbolsToUpdate& onSymbolsToUpdateCB,
-                                  const onSymbolCompleted& onSymbolCompletedCB) const = 0;
+                                  const onSymbolCompleted& onSymbolCompletedCB,
+                                  bool convertToT6 = false) const = 0;
 
     virtual void updateMarketData(const std::string& connectionString,
                                   const onSymbolsToUpdate& onSymbolsToUpdateCB,
