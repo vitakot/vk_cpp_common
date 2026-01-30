@@ -53,3 +53,5 @@ else ()
     add_library(vk_common ${SOURCES} ${HEADERS})
     target_link_libraries(vk_common spdlog::spdlog_header_only)
 endif ()
+
+target_include_directories(vk_common PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
