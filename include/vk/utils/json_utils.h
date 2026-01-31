@@ -129,13 +129,18 @@ inline boost::multiprecision::cpp_dec_float_50 readDecimalValue(const nlohmann::
                                                                 boost::multiprecision::cpp_dec_float_50 defaultVal =
                                                                     boost::multiprecision::cpp_dec_float_50("0")) {
     if (const auto it = json.find(key); it != json.end()) {
-        if (!it.value().is_null() && it->is_string() && !it->get<std::string>().empty()) {
-            return boost::multiprecision::cpp_dec_float_50(it->get<std::string>());
+        if (!it.value().is_null()) {
+            if (it->is_string() && !it->get<std::string>().empty()) {
+                return boost::multiprecision::cpp_dec_float_50(it->get<std::string>());
+            }
+            if (it->is_number()) {
+                return boost::multiprecision::cpp_dec_float_50(std::to_string(it->get<double>()));
+            }
         }
         return defaultVal;
     }
 
-    return false;
+    return defaultVal;
 }
 
 /**
