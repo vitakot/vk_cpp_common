@@ -24,240 +24,252 @@ static const int DAYS_OF_MONTH[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30
 double systemTimeToVariantTimeMs(const unsigned short year, const unsigned short month, const unsigned short day,
                                  const unsigned short hour, const unsigned short min, const unsigned short sec,
                                  const unsigned int msec) {
-    const int m12 = (month - 14) / 12;
-    double dateVal =
-            /* Convert Day/Month/Year to a Julian date - from PostgreSQL */
-            (1461 * (year + 4800 + m12)) / 4 + (367 * (month - 2 - 12 * m12)) / 12 -
-            (3 * ((year + 4900 + m12) / 100)) / 4 + day - 32075
-            - 1757585 /* Convert to + days from 1 Jan 100 AD */
-            - 657434; /* Convert to +/- days from 1 Jan 1899 AD */
-    const double dateSign = dateVal < 0.0 ? -1.0 : 1.0;
-    dateVal += dateSign * (msec + sec * 1000 + min * 60000 + hour * 3600000) / 86400000.0;
-    return dateVal;
+   const int m12 = (month - 14) / 12;
+   double dateVal =
+       /* Convert Day/Month/Year to a Julian date - from PostgreSQL */
+       (1461 * (year + 4800 + m12)) / 4 + (367 * (month - 2 - 12 * m12)) / 12 - (3 * ((year + 4900 + m12) / 100)) / 4 +
+       day - 32075 - 1757585 /* Convert to + days from 1 Jan 100 AD */
+       - 657434;             /* Convert to +/- days from 1 Jan 1899 AD */
+   const double dateSign = dateVal < 0.0 ? -1.0 : 1.0;
+   dateVal += dateSign * (msec + sec * 1000 + min * 60000 + hour * 3600000) / 86400000.0;
+   return dateVal;
 }
 
 size_t strlcpy(char *dst, const char *src, const size_t dsize) {
-    const char *osrc = src;
-    size_t nleft = dsize;
+   const char *osrc = src;
+   size_t nleft = dsize;
 
-    /* Copy as many bytes as will fit. */
-    if (nleft != 0) {
-        while (--nleft != 0) {
-            if ((*dst++ = *src++) == '\0')
-                break;
-        }
-    }
+   /* Copy as many bytes as will fit. */
+   if (nleft != 0) {
+      while (--nleft != 0) {
+         if ((*dst++ = *src++) == '\0') break;
+      }
+   }
 
-    /* Not enough room in dst, add NUL and traverse rest of src. */
-    if (nleft == 0) {
-        if (dsize != 0)
-            *dst = '\0'; /* NUL-terminate dst */
-        while (*src++);
-    }
+   /* Not enough room in dst, add NUL and traverse rest of src. */
+   if (nleft == 0) {
+      if (dsize != 0) *dst = '\0'; /* NUL-terminate dst */
+      while (*src++);
+   }
 
-    return src - osrc - 1; /* count does not include NUL */
+   return src - osrc - 1; /* count does not include NUL */
 }
 
 std::vector<std::string> splitString(const std::string &s, const char delim) {
-    std::stringstream ss(s);
-    std::string item;
-    std::vector<std::string> elems;
+   std::stringstream ss(s);
+   std::string item;
+   std::vector<std::string> elems;
 
-    while (std::getline(ss, item, delim)) {
-        elems.push_back(std::move(item));
-    }
+   while (std::getline(ss, item, delim)) {
+      elems.push_back(std::move(item));
+   }
 
-    return elems;
+   return elems;
 }
 
 inline bool isLeapYear(const short year) {
-    if (year % 4 != 0) return false;
-    if (year % 100 != 0) return true;
-    return year % 400 == 0;
+   if (year % 4 != 0) return false;
+   if (year % 100 != 0) return true;
+   return year % 400 == 0;
 }
 
 time_t mkgmtime(const tm *ptm) {
-    time_t secs = 0;
-    // tm_year is years since 1900
-    const int year = ptm->tm_year + 1900;
-    for (int y = 1970; y < year; ++y) {
-        secs += (isLeapYear(static_cast<short>(y)) ? 366 : 365) * SECONDS_PER_DAY;
-    }
-    // tm_mon is month from 0..11
-    for (int m = 0; m < ptm->tm_mon; ++m) {
-        secs += DAYS_OF_MONTH[m] * SECONDS_PER_DAY;
-        if (m == 1 && isLeapYear(static_cast<short>(year))) {
-            secs += SECONDS_PER_DAY;
-        }
-    }
-    secs += (ptm->tm_mday - 1) * SECONDS_PER_DAY;
-    secs += ptm->tm_hour * SECONDS_PER_HOUR;
-    secs += ptm->tm_min * SECONDS_PER_MINUTE;
-    secs += ptm->tm_sec;
+   time_t secs = 0;
+   // tm_year is years since 1900
+   const int year = ptm->tm_year + 1900;
+   for (int y = 1970; y < year; ++y) {
+      secs += (isLeapYear(static_cast<short>(y)) ? 366 : 365) * SECONDS_PER_DAY;
+   }
+   // tm_mon is month from 0..11
+   for (int m = 0; m < ptm->tm_mon; ++m) {
+      secs += DAYS_OF_MONTH[m] * SECONDS_PER_DAY;
+      if (m == 1 && isLeapYear(static_cast<short>(year))) {
+         secs += SECONDS_PER_DAY;
+      }
+   }
+   secs += (ptm->tm_mday - 1) * SECONDS_PER_DAY;
+   secs += ptm->tm_hour * SECONDS_PER_HOUR;
+   secs += ptm->tm_min * SECONDS_PER_MINUTE;
+   secs += ptm->tm_sec;
 
-    return secs;
+   return secs;
 }
 
 int64_t getTimeStampFromString(const std::string &timeString, const std::string &format) {
-    std::tm time{};
-    std::istringstream ss(timeString);
-    ss >> std::get_time(&time, format.c_str());
-    return mkgmtime(&time);
+   std::tm time{};
+   std::istringstream ss(timeString);
+   ss >> std::get_time(&time, format.c_str());
+   return mkgmtime(&time);
 }
 
 int64_t getTimeStampFromStringWithZone(const std::string &timeString, const std::string &format) {
-    std::istringstream ss(timeString);
-    std::chrono::sys_seconds dt;
-    ss >> date::parse(format, dt);
-    return dt.time_since_epoch().count();
+   std::istringstream ss(timeString);
+   std::chrono::sys_seconds dt;
+   ss >> date::parse(format, dt);
+   return dt.time_since_epoch().count();
 }
 
 std::tm getTimeFromString(const std::string &timeString, const std::string &format) {
-    std::tm time{};
-    std::istringstream ss(timeString);
-    ss >> std::get_time(&time, format.c_str());
-    return time;
+   std::tm time{};
+   std::istringstream ss(timeString);
+   ss >> std::get_time(&time, format.c_str());
+   return time;
 }
 
 std::string getDateTimeStringFromTimeStamp(const int64_t timeStamp, const std::string &format, const bool isMs) {
-    std::string retVal;
-    std::time_t secsSinceEpoch;
-    std::time_t ms = 0;
+   std::string retVal;
+   std::time_t secsSinceEpoch;
+   std::time_t ms = 0;
 
-    if (!isMs) {
-        secsSinceEpoch = timeStamp;
-    } else {
-        secsSinceEpoch = timeStamp / 1000;
-        ms = timeStamp % 1000;
-    }
+   if (!isMs) {
+      secsSinceEpoch = timeStamp;
+   } else {
+      secsSinceEpoch = timeStamp / 1000;
+      ms = timeStamp % 1000;
+   }
 
-    auto timeStruct = std::gmtime(&secsSinceEpoch);
-    char timeString[128];
-    std::strftime(timeString, 128, format.c_str(), timeStruct);
-    retVal.append(timeString);
+   auto timeStruct = std::gmtime(&secsSinceEpoch);
+   char timeString[128];
+   std::strftime(timeString, 128, format.c_str(), timeStruct);
+   retVal.append(timeString);
 
-    if (isMs) {
-        std::string msString(timeString);
-        msString.append(".");
-        msString.append(std::to_string(ms));
-        retVal = msString;
-    }
+   if (isMs) {
+      std::string msString(timeString);
+      msString.append(".");
+      msString.append(std::to_string(ms));
+      retVal = msString;
+   }
 
-    return retVal;
+   return retVal;
 }
 
 std::string formatDouble(const int64_t precision, const double val) {
-    std::string format = "{:.";
-    format.append(std::to_string(precision));
-    format.append("f}");
-    return dyna_print(format, val);
+   std::string format = "{:.";
+   format.append(std::to_string(precision));
+   format.append("f}");
+   return dyna_print(format, val);
 }
 
 std::string getHomeDir() {
-    std::string retVal;
+   std::string retVal;
 
 #ifdef linux
-    retVal = std::string(getenv("HOME"));
+   retVal = std::string(getenv("HOME"));
 #endif
 
 #ifdef _WIN32
-    char *homePath;
-    char *homeDrive;
-    size_t len;
-    errno_t err = _dupenv_s(&homePath, &len, "HOMEPATH");
-    err = _dupenv_s(&homeDrive, &len, "HOMEDRIVE");
-    retVal = std::string(homeDrive) + std::string(homePath);
+   char *homePath;
+   char *homeDrive;
+   size_t len;
+   errno_t err = _dupenv_s(&homePath, &len, "HOMEPATH");
+   err = _dupenv_s(&homeDrive, &len, "HOMEDRIVE");
+   retVal = std::string(homeDrive) + std::string(homePath);
 #endif
 
-    return retVal;
+   return retVal;
 }
 
 bool strCmpCaseIns(const std::string &a, const std::string &b) {
-    return std::ranges::equal(a, b,
-                              [](const char _a, const char _b) {
-                                  return tolower(_a) == tolower(_b);
-                              });
+   return std::ranges::equal(a, b, [](const char _a, const char _b) { return tolower(_a) == tolower(_b); });
 }
 
 std::string queryStringFromMap(const std::map<std::string, std::string> &v) {
-    std::string queryStr;
+   std::string queryStr;
 
-    for (const auto &[fst, snd]: v) {
-        queryStr.append(fst);
-        queryStr.append("=");
-        queryStr.append(snd);
-        queryStr.append("&");
-    }
+   for (const auto &[fst, snd] : v) {
+      queryStr.append(fst);
+      queryStr.append("=");
+      queryStr.append(snd);
+      queryStr.append("&");
+   }
 
-    if (!queryStr.empty()) {
-        queryStr.pop_back();
-    }
+   if (!queryStr.empty()) {
+      queryStr.pop_back();
+   }
 
-    return queryStr;
+   return queryStr;
 }
 
 void replaceAll(std::string &s, const std::string &search, const std::string &replace) {
-    for (size_t pos = 0;; pos += replace.length()) {
-        pos = s.find(search, pos);
+   for (size_t pos = 0;; pos += replace.length()) {
+      pos = s.find(search, pos);
 
-        if (pos == std::string::npos)
-            break;
+      if (pos == std::string::npos) break;
 
-        s.erase(pos, search.length());
-        s.insert(pos, replace);
-    }
+      s.erase(pos, search.length());
+      s.insert(pos, replace);
+   }
 }
 
 std::error_code createDirectoryRecursively(const std::string &dirName) {
-    if (std::error_code err; !std::filesystem::create_directories(dirName, err)) {
-        if (std::filesystem::exists(dirName)) {
-            return {};
-        }
-        return err;
-    }
-    return {};
+   if (std::error_code err; !std::filesystem::create_directories(dirName, err)) {
+      if (std::filesystem::exists(dirName)) {
+         return {};
+      }
+      return err;
+   }
+   return {};
 }
 
 std::vector<std::filesystem::path> findFilePaths(const std::string &dirPath, const std::string &extension) {
-    std::vector<std::filesystem::path> retVal;
-    const std::regex dataFileFilter(extension);
+   std::vector<std::filesystem::path> retVal;
+   const std::regex dataFileFilter(extension);
 
-    for (const auto &entry: std::filesystem::recursive_directory_iterator(dirPath)) {
-        if (!is_regular_file(entry.status()))
-            continue;
+   for (const auto &entry : std::filesystem::recursive_directory_iterator(dirPath)) {
+      if (!is_regular_file(entry.status())) continue;
 
-        if (!std::regex_match(entry.path().extension().string(), dataFileFilter))
-            continue;
+      if (!std::regex_match(entry.path().extension().string(), dataFileFilter)) continue;
 
-        retVal.push_back(entry);
-    }
+      retVal.push_back(entry);
+   }
 
-    return retVal;
+   return retVal;
 }
 
 std::int64_t convertISOToMilliseconds(const std::string &dateStr) {
+   int y, m, d, h, min, s, ms;
 
-    int y, m, d, h, min, s, ms;
+   if (std::sscanf(dateStr.c_str(), "%d-%d-%dT%d:%d:%d.%dZ", &y, &m, &d, &h, &min, &s, &ms) != 7) {
+      throw std::runtime_error(fmt::format("Error parsing date string: {}", dateStr));
+   }
 
-    if (std::sscanf(dateStr.c_str(), "%d-%d-%dT%d:%d:%d.%dZ", &y, &m, &d, &h, &min, &s, &ms) != 7) {
-        throw std::runtime_error(fmt::format("Error parsing date string: {}", dateStr));
-    }
-
-    std::tm tm = {};
-    tm.tm_year = y - 1900;
-    tm.tm_mon = m - 1;
-    tm.tm_mday = d;
-    tm.tm_hour = h;
-    tm.tm_min = min;
-    tm.tm_sec = s;
-    tm.tm_isdst = 0; // UTC
+   std::tm tm = {};
+   tm.tm_year = y - 1900;
+   tm.tm_mon = m - 1;
+   tm.tm_mday = d;
+   tm.tm_hour = h;
+   tm.tm_min = min;
+   tm.tm_sec = s;
+   tm.tm_isdst = 0;  // UTC
 
 #ifdef _WIN32
-    const time_t t = _mkgmtime(&tm);
+   const time_t t = _mkgmtime(&tm);
 #else
-    const time_t t = timegm(&tm);
+   const time_t t = timegm(&tm);
 #endif
 
-    return t * 1000 + ms;
+   return t * 1000 + ms;
 }
+
+std::filesystem::path getDocumentsDir() {
+   const char *home_dir = std::getenv("HOME");
+
+   if (home_dir == nullptr) {
+      throw std::runtime_error("failed to get home directory");
+   }
+
+   return std::filesystem::path(home_dir) / "Documents";
 }
+
+void createFolderInDocuments(const std::filesystem::path &dirPath) {
+   const char *home_dir = std::getenv("HOME");
+
+   if (home_dir == nullptr) {
+      throw std::runtime_error("failed to get home directory");
+   }
+
+   if (const std::filesystem::path target_Path = std::filesystem::path(home_dir) / "Documents" / dirPath;
+       std::filesystem::create_directories(target_Path)) {
+   }
+}
+}  // namespace vk
