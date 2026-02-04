@@ -21,8 +21,8 @@ struct Order {
     /// Symbol name - e.g. BTCUSDT
     std::string symbol{};
 
-    /// Order side - e.g. OrderSide::Buy
-    OrderSide side{OrderSide::Buy};
+    /// Order side - e.g. Side::Buy
+    Side side{Side::Buy};
 
     /// Order type - e.g. OrderType::Limit
     OrderType type{OrderType::Limit};
@@ -88,6 +88,16 @@ struct Ticker {
     std::string marginAsset{};
 };
 
+struct Position {
+    std::string symbol{};
+    Side side{Side::Buy};
+    double size{};
+    double avgPrice{};
+    double value{};
+    std::int64_t createdTime{};
+    std::int64_t updatedTime{};
+    double leverage{};
+};
 }
 
 #endif //INCLUDE_VK_INTERFACE_EXCHANGE_TYPES_H
