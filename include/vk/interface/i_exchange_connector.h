@@ -90,31 +90,40 @@ struct BOOST_SYMBOL_VISIBLE IExchangeConnector {
      * @return timestamp in ms
      */
     [[nodiscard]] virtual std::int64_t getServerTime() const = 0;
+
+    /**
+     * Get position info - if Hedge mode is enabled then there is more than one Position
+     * @param symbol e.g. BTCUSDT or empty for all symbols
+     * @return vector of Position structures
+     */
+    [[nodiscard]] virtual std::vector<Position> getPositionInfo(const std::string& symbol) const = 0;
 };
 
-template <typename R, typename T, typename... Args>
+template<typename R, typename T, typename... Args>
 auto execute(const std::map<ExchangeId, std::shared_ptr<IExchangeConnector>>& exchanges, T method, Args&&... args) {
     std::vector<std::future<std::pair<ExchangeId, R>>> futures;
     std::map<ExchangeId, R> results;
 
-    for (const auto& val : exchanges) {
-        futures.push_back(std::async(std::launch::async, [val, method](Args&&... a) {
-            std::pair<ExchangeId, R> retVal;
-            retVal.first = val.first;
-            retVal.second = (val.second.get()->*method)(std::forward<Args>(a)...);
-            return retVal;
-        }, std::forward<Args>(args)...));
+    for (const auto& val: exchanges) {
+        futures.push_back(std::async(
+                std::launch::async,
+                [val, method](Args&&... a) {
+                    std::pair<ExchangeId, R> retVal;
+                    retVal.first = val.first;
+                    retVal.second = (val.second.get()->*method)(std::forward<Args>(a)...);
+                    return retVal;
+                },
+                std::forward<Args>(args)...));
     }
 
     do {
-        for (auto& future : futures) {
+        for (auto& future: futures) {
             if (isReady(future)) {
                 results.insert(future.get());
             }
         }
-    }
-    while (results.size() < futures.size());
+    } while (results.size() < futures.size());
     return results;
 }
-}
+} // namespace vk
 #endif // INCLUDE_VK_INTERFACE_I_EXCHANGE_CONNECTOR_H

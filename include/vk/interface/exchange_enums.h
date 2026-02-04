@@ -23,7 +23,7 @@ enum class ExchangeId : std::int32_t {
     OKXSpot
 };
 
-enum class OrderSide : std::int32_t {
+enum class Side : std::int32_t {
     Sell = 0,
     Buy = 1
 };
