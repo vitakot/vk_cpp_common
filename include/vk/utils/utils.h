@@ -232,5 +232,9 @@ std::error_code createDirectoryRecursively(const std::string& dirName);
 
 std::vector<std::filesystem::path> findFilePaths(const std::string& dirPath, const std::string& extension);
 
+std::filesystem::path getDocumentsDir();
+
+void createFolderInDocuments(const std::filesystem::path& dirPath);
+
 }
 #endif // INCLUDE_VK_UTILS_H
