@@ -60,6 +60,8 @@ struct TickerPrice {
     double askPrice{};
     double bidQty{};
     double askQty{};
+    double volume24h{};      /**< 24h trading volume in base currency */
+    double turnover24h{};    /**< 24h turnover (dollar volume) in quote currency */
     std::int64_t time{};
 
     nlohmann::json customData{};
