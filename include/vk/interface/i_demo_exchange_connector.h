@@ -32,9 +32,9 @@ struct BOOST_SYMBOL_VISIBLE IDemoExchangeConnector : IExchangeConnector {
    /**
     * Initialize backtest with configuration
     * @param config Exchange configuration
-    * @return True if initialization succeeded
+    * @throws runtime_error
     */
-   virtual bool initialize(const ExchangeConfig& config) = 0;
+   virtual void initialize(const ExchangeConfig& config) = 0;
 
    /**
     * Advance simulation time by specified duration

@@ -97,6 +97,15 @@ struct Position {
     std::int64_t updatedTime{};
     double leverage{};
 };
+
+struct Candle {
+   std::int64_t openTime{};
+   double open{};
+   double high{};
+   double low{};
+   double close{};
+   double volume{};
+};
 }
 
 #endif //INCLUDE_VK_INTERFACE_EXCHANGE_TYPES_H
