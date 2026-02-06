@@ -33,6 +33,7 @@ set(HEADERS
         include/vk/interface/i_exchange_connector.h
         include/vk/interface/i_module_factory.h
         include/vk/interface/i_exchange_downloader.h
+        include/vk/interface/i_demo_exchange_connector.h
         include/vk/utils/utils.h
         include/vk/utils/log_utils.h
         include/vk/utils/json_utils.h
