@@ -97,6 +97,25 @@ struct BOOST_SYMBOL_VISIBLE IExchangeConnector {
      * @return vector of Position structures
      */
     [[nodiscard]] virtual std::vector<Position> getPositionInfo(const std::string& symbol) const = 0;
+
+    /**
+     * Get historical funding rates for a symbol in a time range
+     * @param symbol e.g. BTCUSDT
+     * @param startTime timestamp in ms (inclusive)
+     * @param endTime timestamp in ms (inclusive)
+     * @return vector of FundingRate structures sorted by fundingTime ascending
+     */
+    [[nodiscard]] virtual std::vector<FundingRate> getHistoricalFundingRates(const std::string& symbol, std::int64_t startTime, std::int64_t endTime) const = 0;
+
+    /**
+     * Get historical candles for a symbol in a time range
+     * @param symbol e.g. BTCUSDT
+     * @param interval candle interval (e.g. CandleInterval::_1h)
+     * @param startTime timestamp in ms (inclusive)
+     * @param endTime timestamp in ms (inclusive)
+     * @return vector of Candle structures sorted by openTime ascending
+     */
+    [[nodiscard]] virtual std::vector<Candle> getHistoricalCandles(const std::string& symbol, CandleInterval interval, std::int64_t startTime, std::int64_t endTime) const = 0;
 };
 
 template<typename R, typename T, typename... Args>
