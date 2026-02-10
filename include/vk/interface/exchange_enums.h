@@ -12,17 +12,6 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 #include <cstdint>
 
 namespace vk {
-enum class ExchangeId : std::int32_t {
-    Demo,
-    BinanceFutures,
-    BinanceSpot,
-    BybitFutures,
-    BybitSpot,
-    MEXCFutures,
-    MEXCSpot,
-    OKXFutures,
-    OKXSpot
-};
 
 enum class Side : std::int32_t {
     Sell = 0,
