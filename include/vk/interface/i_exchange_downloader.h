@@ -6,7 +6,6 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 */
 
-
 #ifndef INCLUDE_VK_INTERFACE_I_EXCHANGE_DOWNLOADER_H
 #define INCLUDE_VK_INTERFACE_I_EXCHANGE_DOWNLOADER_H
 
