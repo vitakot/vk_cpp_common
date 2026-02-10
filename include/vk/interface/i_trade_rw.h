@@ -1,13 +1,13 @@
 /**
-Trade Writer Interface
+Trade Reader/Writer Interface
 
 Licensed under the MIT License <http://opensource.org/licenses/MIT>.
 SPDX-License-Identifier: MIT
 Copyright (c) 2021 Vitezslav Kot <vitezslav.kot@gmail.com>.
 */
 
-#ifndef INCLUDE_VK_INTERFACE_I_TRADE_WRITER_H
-#define INCLUDE_VK_INTERFACE_I_TRADE_WRITER_H
+#ifndef INCLUDE_VK_INTERFACE_I_TRADE_RW_H
+#define INCLUDE_VK_INTERFACE_I_TRADE_RW_H
 
 #include <cstdint>
 #include <optional>
@@ -89,11 +89,14 @@ struct Trade {
 
 struct TradeWriterCfg {
    std::string filePath{};
+   std::string connectionString{};
 };
 
 // --- Interface ---
-struct ITradeWriter {
-    virtual ~ITradeWriter() = default;
+struct ITradeRW {
+    virtual ~ITradeRW() = default;
+
+    virtual void configure(const TradeWriterCfg &cfg) = 0;
 
     virtual void write(const Trade& trade) const = 0;
 
@@ -101,4 +104,4 @@ struct ITradeWriter {
 };
 }
 
-#endif // INCLUDE_VK_INTERFACE_I_TRADE_WRITER_H
+#endif // INCLUDE_VK_INTERFACE_I_TRADE_RW_H
