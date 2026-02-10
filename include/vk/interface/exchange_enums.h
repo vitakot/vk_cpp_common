@@ -13,6 +13,7 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@gmail.com>.
 
 namespace vk {
 enum class ExchangeId : std::int32_t {
+    Demo,
     BinanceFutures,
     BinanceSpot,
     BybitFutures,
