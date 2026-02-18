@@ -85,6 +85,14 @@ struct Symbol {
     std::string baseAsset{};
     std::string quoteAsset{};
     std::string marginAsset{};
+    /// Size of one contract in base asset units (futures only)
+    double contractSize{1.0};
+    /// Minimum order volume in contracts
+    std::int32_t minVol{1};
+    /// Maximum order volume in contracts
+    std::int32_t maxVol{1000000};
+    /// Volume step size (order must be a multiple of this)
+    std::int32_t volUnit{1};
 };
 
 struct Position {
