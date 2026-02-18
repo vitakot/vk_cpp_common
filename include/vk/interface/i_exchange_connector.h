@@ -94,9 +94,9 @@ struct BOOST_SYMBOL_VISIBLE IExchangeConnector {
    /**
     * Get symbol info
     * @param symbol
-    * @return vector of Ticker structures
+    * @return vector of Symbol structures
     */
-   [[nodiscard]] virtual std::vector<Ticker> getTickerInfo(const std::string& symbol) const = 0;
+   [[nodiscard]] virtual std::vector<Symbol> getSymbolInfo(const std::string& symbol) const = 0;
 
    /**
     * Get server Unix time in ms
