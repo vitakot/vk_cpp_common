@@ -78,7 +78,7 @@ struct FundingRate {
     nlohmann::json customData{};
 };
 
-struct Ticker {
+struct Symbol {
     std::string symbol{};
     std::string displayName{};
     MarketCategory marketCategory {MarketCategory::Spot};
