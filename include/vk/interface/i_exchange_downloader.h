@@ -36,6 +36,9 @@ struct IExchangeDownloader {
                                        const std::vector<std::string>& symbols,
                                        const onSymbolsToUpdate& onSymbolsToUpdateCB,
                                        const onSymbolCompleted& onSymbolCompletedCB) const = 0;
+
+    virtual void convertToT6(const std::string& dirPath,
+                              CandleInterval candleInterval) const = 0;
 };
 }
 #endif //INCLUDE_VK_INTERFACE_I_EXCHANGE_DOWNLOADER_H
