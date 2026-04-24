@@ -6,12 +6,12 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2026 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#ifndef INCLUDE_VK_INTERFACE_I_DEMO_EXCHANGE_CONNECTOR_H
-#define INCLUDE_VK_INTERFACE_I_DEMO_EXCHANGE_CONNECTOR_H
+#ifndef INCLUDE_STONKY_INTERFACE_I_DEMO_EXCHANGE_CONNECTOR_H
+#define INCLUDE_STONKY_INTERFACE_I_DEMO_EXCHANGE_CONNECTOR_H
 
 #include <vk/interface/i_exchange_connector.h>
 
-namespace vk {
+namespace stonky {
 
 /**
  * Configuration for exchange connector
@@ -78,5 +78,5 @@ struct BOOST_SYMBOL_VISIBLE IDemoExchangeConnector : IExchangeConnector {
     */
    virtual void reset() = 0;
 };
-}  // namespace vk
-#endif  // INCLUDE_VK_INTERFACE_I_DEMO_EXCHANGE_CONNECTOR_H
+}  // namespace stonky
+#endif  // INCLUDE_STONKY_INTERFACE_I_DEMO_EXCHANGE_CONNECTOR_H

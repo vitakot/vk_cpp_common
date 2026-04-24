@@ -6,13 +6,13 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#ifndef INCLUDE_VK_INTERFACE_I_MODULE_FACTORY_H
-#define INCLUDE_VK_INTERFACE_I_MODULE_FACTORY_H
+#ifndef INCLUDE_STONKY_INTERFACE_I_MODULE_FACTORY_H
+#define INCLUDE_STONKY_INTERFACE_I_MODULE_FACTORY_H
 
 #include <string>
 #include "boost/config.hpp"
 
-namespace vk {
+namespace stonky {
 struct FactoryInfo {
     std::string m_id;
     std::string m_description;
@@ -32,4 +32,4 @@ typedef IModuleFactory*(GetFactoryProc)();
 }
 }
 
-#endif // INCLUDE_VK_INTERFACE_I_MODULE_FACTORY_H
+#endif // INCLUDE_STONKY_INTERFACE_I_MODULE_FACTORY_H

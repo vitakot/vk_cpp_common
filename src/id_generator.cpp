@@ -6,10 +6,10 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#include "vk/utils/id_generator.h"
+#include "stonky/utils/id_generator.h"
 #include <chrono>
 
-namespace vk {
+namespace stonky {
 std::atomic<std::int64_t> IdGenerator64::s_currentId(std::chrono::duration_cast<std::chrono::milliseconds>(
     std::chrono::system_clock::now().time_since_epoch()).count());
 

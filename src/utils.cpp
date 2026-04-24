@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#include "vk/utils/utils.h"
+#include "stonky/utils/utils.h"
 #include "date.h"
 #include <spdlog/fmt/ostr.h>
 #include <iomanip>
@@ -15,7 +15,7 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 #include <regex>
 #include <sstream>
 
-namespace vk {
+namespace stonky {
 static constexpr int SECONDS_PER_MINUTE = 60;
 static constexpr int SECONDS_PER_HOUR = 3600;
 static constexpr int SECONDS_PER_DAY = 86400;
@@ -272,4 +272,4 @@ void createFolderInDocuments(const std::filesystem::path &dirPath) {
        std::filesystem::create_directories(target_Path)) {
    }
 }
-}  // namespace vk
+}  // namespace stonky

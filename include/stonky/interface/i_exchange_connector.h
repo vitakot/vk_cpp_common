@@ -6,8 +6,8 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#ifndef INCLUDE_VK_INTERFACE_I_EXCHANGE_CONNECTOR_H
-#define INCLUDE_VK_INTERFACE_I_EXCHANGE_CONNECTOR_H
+#ifndef INCLUDE_STONKY_INTERFACE_I_EXCHANGE_CONNECTOR_H
+#define INCLUDE_STONKY_INTERFACE_I_EXCHANGE_CONNECTOR_H
 
 #include <vk/utils/log_utils.h>
 #include <vk/utils/semaphore.h>
@@ -16,7 +16,7 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 #include <string>
 #include <boost/dll/alias.hpp>
 
-namespace vk {
+namespace stonky {
 struct BOOST_SYMBOL_VISIBLE IExchangeConnector {
 
    enum class ExchangeId : std::int32_t {
@@ -162,5 +162,5 @@ auto execute(const std::map<IExchangeConnector::ExchangeId, std::shared_ptr<IExc
    } while (results.size() < futures.size());
    return results;
 }
-}  // namespace vk
-#endif  // INCLUDE_VK_INTERFACE_I_EXCHANGE_CONNECTOR_H
+}  // namespace stonky
+#endif  // INCLUDE_STONKY_INTERFACE_I_EXCHANGE_CONNECTOR_H

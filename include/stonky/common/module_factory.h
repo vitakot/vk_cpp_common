@@ -6,10 +6,10 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#ifndef INCLUDE_VK_COMMON_MODULE_FACTORY_H
-#define INCLUDE_VK_COMMON_MODULE_FACTORY_H
+#ifndef INCLUDE_STONKY_COMMON_MODULE_FACTORY_H
+#define INCLUDE_STONKY_COMMON_MODULE_FACTORY_H
 
-#include "vk/interface/i_module_factory.h"
+#include "stonky/interface/i_module_factory.h"
 #include <map>
 #include <functional>
 #include <boost/type_index.hpp>
@@ -17,7 +17,7 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 #include <mutex>
 #include <memory>
 
-namespace vk {
+namespace stonky {
 class ModuleFactory final : public IModuleFactory {
     FactoryInfo m_factoryInfo;
     std::map<std::string, boost::any> m_factoryMap;
@@ -115,4 +115,4 @@ public:
 extern ModuleFactory *g_moduleFactory;
 }
 
-#endif // INCLUDE_VK_COMMON_MODULE_FACTORY_H
+#endif // INCLUDE_STONKY_COMMON_MODULE_FACTORY_H

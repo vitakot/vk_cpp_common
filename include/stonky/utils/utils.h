@@ -6,8 +6,8 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#ifndef INCLUDE_VK_UTILS_H
-#define INCLUDE_VK_UTILS_H
+#ifndef INCLUDE_STONKY_UTILS_H
+#define INCLUDE_STONKY_UTILS_H
 
 #include <chrono>
 #include <string>
@@ -18,7 +18,7 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 #include <algorithm>
 #include <cstdint>
 
-namespace vk {
+namespace stonky {
 typedef double DATE;
 
 typedef struct T6 {
@@ -237,4 +237,4 @@ std::filesystem::path getDocumentsDir();
 void createFolderInDocuments(const std::filesystem::path& dirPath);
 
 }
-#endif // INCLUDE_VK_UTILS_H
+#endif // INCLUDE_STONKY_UTILS_H

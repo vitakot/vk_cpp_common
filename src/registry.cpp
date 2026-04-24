@@ -6,9 +6,9 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#include "vk/utils/registry.h"
+#include "stonky/utils/registry.h"
 
-namespace vk {
+namespace stonky {
 #if defined _WIN32
 bool createRegistryKey(HKEY hKeyParent, const char *subKey) {
     DWORD dwDisposition;

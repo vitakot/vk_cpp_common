@@ -6,14 +6,14 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#ifndef INCLUDE_VK_UTILS_JSON_UTILS_H
-#define INCLUDE_VK_UTILS_JSON_UTILS_H
+#ifndef INCLUDE_STONKY_UTILS_JSON_UTILS_H
+#define INCLUDE_STONKY_UTILS_JSON_UTILS_H
 
 #include <nlohmann/json.hpp>
 #include <boost/multiprecision/cpp_dec_float.hpp>
-#include "vk/utils/magic_enum_wrapper.hpp"
+#include "stonky/utils/magic_enum_wrapper.hpp"
 
-namespace vk {
+namespace stonky {
 /**
  * Helper for reading a value from nlohmann::json object.
  * @tparam ValueType
@@ -226,4 +226,4 @@ inline std::string queryStringFromJson(const nlohmann::json& pars) {
 }
 }
 
-#endif // INCLUDE_VK_UTILS_JSON_UTILS_H
+#endif // INCLUDE_STONKY_UTILS_JSON_UTILS_H

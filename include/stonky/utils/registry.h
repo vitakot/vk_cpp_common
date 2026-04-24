@@ -6,13 +6,13 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#ifndef INCLUDE_VK_UTILS_REGISTRY_H
-#define INCLUDE_VK_UTILS_REGISTRY_H
+#ifndef INCLUDE_STONKY_UTILS_REGISTRY_H
+#define INCLUDE_STONKY_UTILS_REGISTRY_H
 
 #if defined _WIN32
 #include <windows.h>
 
-namespace vk {
+namespace stonky {
 
 bool createRegistryKey(HKEY hKeyParent, const char *subKey);
 
@@ -22,4 +22,4 @@ bool readDwordValueRegistry(HKEY hKeyParent, const char *subKey, const char *val
 
 }
 #endif
-#endif // INCLUDE_VK_UTILS_REGISTRY_H
+#endif // INCLUDE_STONKY_UTILS_REGISTRY_H

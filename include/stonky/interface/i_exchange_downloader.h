@@ -6,15 +6,15 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#ifndef INCLUDE_VK_INTERFACE_I_EXCHANGE_DOWNLOADER_H
-#define INCLUDE_VK_INTERFACE_I_EXCHANGE_DOWNLOADER_H
+#ifndef INCLUDE_STONKY_INTERFACE_I_EXCHANGE_DOWNLOADER_H
+#define INCLUDE_STONKY_INTERFACE_I_EXCHANGE_DOWNLOADER_H
 
 #include "exchange_enums.h"
 #include <string>
 #include <vector>
 #include <functional>
 
-namespace vk {
+namespace stonky {
 using onSymbolsToUpdate = std::function<void(const std::vector<std::string>& symbols)>;
 using onSymbolCompleted = std::function<void(const std::string& symbol)>;
 
@@ -41,4 +41,4 @@ struct IExchangeDownloader {
                               CandleInterval candleInterval) const = 0;
 };
 }
-#endif //INCLUDE_VK_INTERFACE_I_EXCHANGE_DOWNLOADER_H
+#endif //INCLUDE_STONKY_INTERFACE_I_EXCHANGE_DOWNLOADER_H

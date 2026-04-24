@@ -7,15 +7,15 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#ifndef INCLUDE_VK_COMMON_MODULE_MANAGER_H
-#define INCLUDE_VK_COMMON_MODULE_MANAGER_H
+#ifndef INCLUDE_STONKY_COMMON_MODULE_MANAGER_H
+#define INCLUDE_STONKY_COMMON_MODULE_MANAGER_H
 
 #include "module_factory.h"
 #include <mutex>
 #include <list>
 #include <boost/dll/shared_library.hpp>
 
-namespace vk {
+namespace stonky {
 class ModuleManager {
 public:
     static std::shared_ptr<ModuleManager> getInstance() {
@@ -71,4 +71,4 @@ public:
 };
 }
 
-#endif // INCLUDE_VK_COMMON_MODULE_MANAGER_H
+#endif // INCLUDE_STONKY_COMMON_MODULE_MANAGER_H

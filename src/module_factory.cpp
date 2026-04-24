@@ -6,9 +6,9 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#include "vk/common/module_factory.h"
+#include "stonky/common/module_factory.h"
 
-namespace vk {
+namespace stonky {
 ModuleFactory *g_moduleFactory = nullptr;
 
 ModuleFactory::ModuleFactory(const FactoryInfo &info) {

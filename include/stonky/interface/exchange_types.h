@@ -6,14 +6,14 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#ifndef INCLUDE_VK_INTERFACE_EXCHANGE_TYPES_H
-#define INCLUDE_VK_INTERFACE_EXCHANGE_TYPES_H
+#ifndef INCLUDE_STONKY_INTERFACE_EXCHANGE_TYPES_H
+#define INCLUDE_STONKY_INTERFACE_EXCHANGE_TYPES_H
 
 #include "exchange_enums.h"
 #include <string>
 #include <nlohmann/json.hpp>
 
-namespace vk {
+namespace stonky {
 struct Order {
     /// Order quantity
     double quantity{};
@@ -116,4 +116,4 @@ struct Candle {
 };
 }
 
-#endif //INCLUDE_VK_INTERFACE_EXCHANGE_TYPES_H
+#endif //INCLUDE_STONKY_INTERFACE_EXCHANGE_TYPES_H

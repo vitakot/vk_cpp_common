@@ -6,12 +6,12 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#ifndef INCLUDE_VK_INTERFACE_EXCHANGE_ENUMS_H
-#define INCLUDE_VK_INTERFACE_EXCHANGE_ENUMS_H
+#ifndef INCLUDE_STONKY_INTERFACE_EXCHANGE_ENUMS_H
+#define INCLUDE_STONKY_INTERFACE_EXCHANGE_ENUMS_H
 
 #include <cstdint>
 
-namespace vk {
+namespace stonky {
 
 enum class Side : std::int32_t {
     Sell = 0,
@@ -68,4 +68,4 @@ enum class CandleInterval : std::int32_t {
 };
 }
 
-#endif //INCLUDE_VK_INTERFACE_EXCHANGE_ENUMS_H
+#endif //INCLUDE_STONKY_INTERFACE_EXCHANGE_ENUMS_H

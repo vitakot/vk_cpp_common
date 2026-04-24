@@ -6,12 +6,12 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#ifndef INCLUDE_VK_UTILS_ID_GENERATOR_H
-#define INCLUDE_VK_UTILS_ID_GENERATOR_H
+#ifndef INCLUDE_STONKY_UTILS_ID_GENERATOR_H
+#define INCLUDE_STONKY_UTILS_ID_GENERATOR_H
 
 #include <atomic>
 
-namespace vk {
+namespace stonky {
 class IdGenerator32 {
     static std::atomic<std::int32_t> s_currentId;
 
@@ -30,4 +30,4 @@ public:
     static std::int64_t nextId();
 };
 }
-#endif // INCLUDE_VK_UTILS_ID_GENERATOR_H
+#endif // INCLUDE_STONKY_UTILS_ID_GENERATOR_H

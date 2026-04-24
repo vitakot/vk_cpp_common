@@ -6,8 +6,8 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#ifndef INCLUDE_VK_UTILS_LOG_UTILS_H
-#define INCLUDE_VK_UTILS_LOG_UTILS_H
+#ifndef INCLUDE_STONKY_UTILS_LOG_UTILS_H
+#define INCLUDE_STONKY_UTILS_LOG_UTILS_H
 
 #include <string>
 #include <functional>
@@ -26,7 +26,7 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
     __FILE__ "(" STRINGIZE(__LINE__) ")"
 #endif
 
-namespace vk {
+namespace stonky {
 enum class LogSeverity : int {
     Info,
     Warning,
@@ -37,31 +37,31 @@ enum class LogSeverity : int {
 };
 }
 
-using onLogMessage = std::function<void(vk::LogSeverity severity, const std::string& errmsg)>;
+using onLogMessage = std::function<void(stonky::LogSeverity severity, const std::string& errmsg)>;
 
-inline void defaultLogFunction(const vk::LogSeverity severity, const std::string& errmsg) {
+inline void defaultLogFunction(const stonky::LogSeverity severity, const std::string& errmsg) {
     switch (severity) {
-        case vk::LogSeverity::Info:
+        case stonky::LogSeverity::Info:
 #ifdef VERBOSE_LOG
             spdlog::info(errmsg);
 #endif
         break;
-        case vk::LogSeverity::Warning:
+        case stonky::LogSeverity::Warning:
             spdlog::warn(errmsg);
         break;
-        case vk::LogSeverity::Critical:
+        case stonky::LogSeverity::Critical:
             spdlog::critical(errmsg);
         break;
-        case vk::LogSeverity::Error:
+        case stonky::LogSeverity::Error:
             spdlog::error(errmsg);
         break;
-        case vk::LogSeverity::Debug:
+        case stonky::LogSeverity::Debug:
             spdlog::debug(errmsg);
         break;
-        case vk::LogSeverity::Trace:
+        case stonky::LogSeverity::Trace:
             spdlog::trace(errmsg);
         break;
     }
 }
 
-#endif // INCLUDE_VK_UTILS_LOG_UTILS_H
+#endif // INCLUDE_STONKY_UTILS_LOG_UTILS_H

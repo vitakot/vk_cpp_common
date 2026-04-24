@@ -7,14 +7,14 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#include "vk/common/module_manager.h"
+#include "stonky/common/module_manager.h"
 #include <boost/dll/import.hpp>
 #include <boost/dll/runtime_symbol_info.hpp>
 #include <regex>
 #include <filesystem>
 #include <spdlog/spdlog.h>
 
-namespace vk {
+namespace stonky {
 ModuleManager::~ModuleManager() {
     m_moduleFactories.clear();
     m_libraries.clear();

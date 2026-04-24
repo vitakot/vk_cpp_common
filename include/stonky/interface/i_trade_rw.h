@@ -6,14 +6,14 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2021 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#ifndef INCLUDE_VK_INTERFACE_I_TRADE_RW_H
-#define INCLUDE_VK_INTERFACE_I_TRADE_RW_H
+#ifndef INCLUDE_STONKY_INTERFACE_I_TRADE_RW_H
+#define INCLUDE_STONKY_INTERFACE_I_TRADE_RW_H
 
 #include <cstdint>
 #include <optional>
 #include <string>
 
-namespace vk {
+namespace stonky {
 
 enum class FillOrder : std::int32_t { Market, Limit, StopMarket, StopLimit };
 
@@ -103,6 +103,6 @@ struct ITradeRW {
     */
    [[nodiscard]] virtual TradeRecord read(std::int32_t tradeId) const = 0;
 };
-}  // namespace vk
+}  // namespace stonky
 
-#endif  // INCLUDE_VK_INTERFACE_I_TRADE_RW_H
+#endif  // INCLUDE_STONKY_INTERFACE_I_TRADE_RW_H
