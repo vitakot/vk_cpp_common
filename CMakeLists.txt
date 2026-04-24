@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 4.0)
-project(vk_common)
+project(stonky_common)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -49,11 +49,11 @@ set(SOURCES
         src/base64.cpp)
 
 if (MODULE_MANAGER)
-    add_library(vk_common ${SOURCES} ${SOURCES_M_MANAGER} ${HEADERS})
-    target_link_libraries(vk_common Boost::system Boost::filesystem spdlog::spdlog_header_only)
+    add_library(stonky_common ${SOURCES} ${SOURCES_M_MANAGER} ${HEADERS})
+    target_link_libraries(stonky_common Boost::system Boost::filesystem spdlog::spdlog_header_only)
 else ()
-    add_library(vk_common ${SOURCES} ${HEADERS})
-    target_link_libraries(vk_common spdlog::spdlog_header_only)
+    add_library(stonky_common ${SOURCES} ${HEADERS})
+    target_link_libraries(stonky_common spdlog::spdlog_header_only)
 endif ()
 
-target_include_directories(vk_common PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(stonky_common PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
