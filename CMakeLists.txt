@@ -29,16 +29,16 @@ endif ()
 find_package(spdlog CONFIG REQUIRED)
 
 set(HEADERS
-        include/vk/interface/i_json.h
-        include/vk/interface/i_exchange_connector.h
-        include/vk/interface/i_module_factory.h
-        include/vk/interface/i_exchange_downloader.h
-        include/vk/interface/i_demo_exchange_connector.h
-        include/vk/interface/i_trade_rw.h
-        include/vk/utils/utils.h
-        include/vk/utils/log_utils.h
-        include/vk/utils/json_utils.h
-        include/vk/utils/semaphore.h
+        include/stonky/interface/i_json.h
+        include/stonky/interface/i_exchange_connector.h
+        include/stonky/interface/i_module_factory.h
+        include/stonky/interface/i_exchange_downloader.h
+        include/stonky/interface/i_demo_exchange_connector.h
+        include/stonky/interface/i_trade_rw.h
+        include/stonky/utils/utils.h
+        include/stonky/utils/log_utils.h
+        include/stonky/utils/json_utils.h
+        include/stonky/utils/semaphore.h
         include/date.h
         include/base64.h)
 
