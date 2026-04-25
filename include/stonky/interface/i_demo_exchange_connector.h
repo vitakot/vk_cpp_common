@@ -9,7 +9,7 @@ Copyright (c) 2026 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 #ifndef INCLUDE_STONKY_INTERFACE_I_DEMO_EXCHANGE_CONNECTOR_H
 #define INCLUDE_STONKY_INTERFACE_I_DEMO_EXCHANGE_CONNECTOR_H
 
-#include <vk/interface/i_exchange_connector.h>
+#include <stonky/interface/i_exchange_connector.h>
 
 namespace stonky {
 

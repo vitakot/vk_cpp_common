@@ -9,8 +9,8 @@ Copyright (c) 2022 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 #ifndef INCLUDE_STONKY_INTERFACE_I_EXCHANGE_CONNECTOR_H
 #define INCLUDE_STONKY_INTERFACE_I_EXCHANGE_CONNECTOR_H
 
-#include <vk/utils/log_utils.h>
-#include <vk/utils/semaphore.h>
+#include <stonky/utils/log_utils.h>
+#include <stonky/utils/semaphore.h>
 #include <future>
 #include "exchange_types.h"
 #include <string>
