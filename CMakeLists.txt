@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 4.0)
 project(stonky_common)
 
-set(CMAKE_CXX_STANDARD 20)
+# C++23: the chasing-limit executor core (now part of this lib) uses
+# std::jthread / std::stop_token.
+set(CMAKE_CXX_STANDARD 23)
 
 if (MSVC)
     add_definitions(-D_WIN32_WINNT=0x0A00 /bigobj /utf-8)
@@ -31,10 +33,12 @@ find_package(spdlog CONFIG REQUIRED)
 set(HEADERS
         include/stonky/interface/i_json.h
         include/stonky/interface/i_exchange_connector.h
+        include/stonky/interface/i_execution_gateway.h
         include/stonky/interface/i_module_factory.h
         include/stonky/interface/i_exchange_downloader.h
         include/stonky/interface/i_demo_exchange_connector.h
         include/stonky/interface/i_trade_rw.h
+        include/stonky/common/chasing_limit_executor.h
         include/stonky/utils/utils.h
         include/stonky/utils/log_utils.h
         include/stonky/utils/json_utils.h
@@ -46,7 +50,8 @@ set(SOURCES
         src/id_generator.cpp
         src/registry.cpp
         src/utils.cpp
-        src/base64.cpp)
+        src/base64.cpp
+        src/chasing_limit_executor.cpp)
 
 if (MODULE_MANAGER)
     add_library(stonky_common ${SOURCES} ${SOURCES_M_MANAGER} ${HEADERS})
@@ -57,3 +62,7 @@ else ()
 endif ()
 
 target_include_directories(stonky_common PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+# Propagate C++23 to every consumer (the executor's jthread/stop_token are in a
+# PUBLIC header), so connectors/bots inherit it without each setting the standard.
+target_compile_features(stonky_common PUBLIC cxx_std_23)
