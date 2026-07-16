@@ -6,8 +6,8 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2026 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#ifndef DIRTY_CARRY_I_EXECUTION_GATEWAY_H
-#define DIRTY_CARRY_I_EXECUTION_GATEWAY_H
+#ifndef I_EXECUTION_GATEWAY_H
+#define I_EXECUTION_GATEWAY_H
 
 #include <chrono>
 #include <functional>
@@ -210,4 +210,4 @@ public:
 
 } // namespace stonky::execution
 
-#endif // DIRTY_CARRY_I_EXECUTION_GATEWAY_H
+#endif // I_EXECUTION_GATEWAY_H

@@ -6,8 +6,8 @@ SPDX-License-Identifier: MIT
 Copyright (c) 2026 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 */
 
-#ifndef DIRTY_CARRY_CHASING_LIMIT_EXECUTOR_H
-#define DIRTY_CARRY_CHASING_LIMIT_EXECUTOR_H
+#ifndef CHASING_LIMIT_EXECUTOR_H
+#define CHASING_LIMIT_EXECUTOR_H
 
 #include <stonky/interface/i_execution_gateway.h>
 #include <chrono>
@@ -169,4 +169,4 @@ public:
 
 } // namespace stonky::execution
 
-#endif // DIRTY_CARRY_CHASING_LIMIT_EXECUTOR_H
+#endif // CHASING_LIMIT_EXECUTOR_H
