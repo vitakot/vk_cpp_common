@@ -134,7 +134,9 @@ inline boost::multiprecision::cpp_dec_float_50 readDecimalValue(const nlohmann::
                 return boost::multiprecision::cpp_dec_float_50(it->get<std::string>());
             }
             if (it->is_number()) {
-                return boost::multiprecision::cpp_dec_float_50(std::to_string(it->get<double>()));
+                // dump() preserves the JSON number's full stored representation;
+                // std::to_string(double) truncated it to six decimal places.
+                return boost::multiprecision::cpp_dec_float_50(it->dump());
             }
         }
         return defaultVal;
