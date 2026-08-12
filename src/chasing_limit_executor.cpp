@@ -94,6 +94,23 @@ struct LegState {
     SteadyTime delayUntil{}; /// iceberg inter-chunk jitter gate
     SteadyTime backoffUntil{}; /// reject backoff gate
     std::set<std::string> seenFillIds; /// fill dedup (events may re-deliver)
+    /// Per-order accounted fill qty. Together with `fillGaps` this closes the
+    /// terminal-before-fill ordering race (audit 2026-08-12 #6): a Filled or
+    /// Cancelled order update clears the active handle immediately, but qty
+    /// lands via fill events — a worker that recomputed the remainder from a
+    /// stale filledQty in that gap would submit a second child order, and the
+    /// delayed fill would push the position past target.
+    std::map<std::string, double> orderFilled;
+    /// A terminal order update declared MORE cumulative fill than the fill
+    /// events delivered so far: hold new submits behind a short barrier until
+    /// the fills land, then (barrier expired) reconcile the difference from
+    /// the venue's authoritative cumulative figure.
+    struct FillGap {
+        double cumQty{};
+        double price{}; /// best price hint for a synthesized fill
+        SteadyTime barrierUntil{};
+    };
+    std::map<std::string, FillGap> fillGaps;
     /// Orders whose TERMINAL event (Filled/Cancelled/Rejected) was already
     /// seen. A terminal event can beat the submit's REST ack (live-observed:
     /// a post-only cross lands mid-roundtrip) — the submit path consults this
@@ -213,8 +230,22 @@ struct ChasingLimitExecutor::P {
             return;
         }
 
-        leg->filledQty += fill.qty;
-        leg->filledNotional += fill.qty * fill.price;
+        double add = fill.qty;
+        double &accounted = leg->orderFilled[fill.clientOrderId];
+
+        /// If this order's terminal update declared a cumulative fill, the
+        /// venue figure is authoritative: cap what fill events may add so a
+        /// late fill arriving AFTER the gap was reconciled from that figure
+        /// cannot double-count (audit #6).
+        if (const auto it = leg->fillGaps.find(fill.clientOrderId); it != leg->fillGaps.end()) {
+            add = std::min(add, std::max(0.0, it->second.cumQty - accounted));
+        }
+
+        accounted += add;
+        if (add > 0.0) {
+            leg->filledQty += add;
+            leg->filledNotional += add * fill.price;
+        }
         leg->notify();
     }
 
@@ -253,6 +284,24 @@ struct ChasingLimitExecutor::P {
 
             if (leg->cancelPendingOrder == update.clientOrderId) {
                 leg->cancelPendingOrder.clear();
+            }
+
+            /// Terminal updates may carry (or PRECEDE) fills. When the venue's
+            /// cumulative figure exceeds what fill events delivered so far,
+            /// park the order behind a short barrier: the worker must not
+            /// compute a remainder from the stale filledQty until the fills
+            /// land or the barrier reconciles the gap (audit #6).
+            if (update.cumFilledQty > 0.0) {
+                if (const double accounted = leg->orderFilled[update.clientOrderId]; update.cumFilledQty > accounted + 1e-12) {
+                    auto &gap = leg->fillGaps[update.clientOrderId];
+                    gap.cumQty = std::max(gap.cumQty, update.cumFilledQty);
+                    if (update.price > 0.0) {
+                        gap.price = update.price;
+                    } else if (gap.price <= 0.0) {
+                        gap.price = leg->activePrice;
+                    }
+                    gap.barrierUntil = now + std::chrono::milliseconds(3000);
+                }
             }
         }
 
@@ -738,6 +787,47 @@ struct ChasingLimitExecutor::P {
                 std::unique_lock lk(leg->m);
 
                 if (leg->activeOrder.empty() && !orphansPending) {
+                    /// Fill-accounting barrier (audit #6): a terminal order
+                    /// with fills its events have not delivered yet parks the
+                    /// submit path. Within the barrier: wait for the fills.
+                    /// Past it: book the difference from the venue's
+                    /// cumulative figure, then re-evaluate from the loop top
+                    /// (the reconciled qty may complete the leg).
+                    {
+                        const auto nowGap = SteadyClock::now();
+                        const double eps = std::max(spec.qtyStep * 0.5, 1e-12);
+                        SteadyTime gapBarrier{};
+                        double reconciled = 0.0;
+                        for (auto &[id, gap]: leg->fillGaps) {
+                            const double room = gap.cumQty - leg->orderFilled[id];
+                            if (room <= eps) {
+                                continue;
+                            }
+                            if (nowGap < gap.barrierUntil) {
+                                gapBarrier = std::max(gapBarrier, gap.barrierUntil);
+                            } else {
+                                const double px = gap.price > 0.0 ? gap.price : targetPrice;
+                                leg->orderFilled[id] = gap.cumQty;
+                                leg->filledQty += room;
+                                leg->filledNotional += room * px;
+                                reconciled += room;
+                                spdlog::warn("{}: order {} fills reconciled from venue cumulative (+{:.6g} @ {:.6g}) — fill events late or lost", leg->symbol, id,
+                                             room, px);
+                            }
+                        }
+                        if (gapBarrier != SteadyTime{}) {
+                            const auto sleepUntil = std::min(gapBarrier, steadyDeadline);
+                            lk.unlock();
+                            while (SteadyClock::now() < sleepUntil && !stopToken.stop_requested()) {
+                                std::this_thread::sleep_until(std::min(sleepUntil, SteadyClock::now() + std::chrono::milliseconds(50)));
+                            }
+                            continue;
+                        }
+                        if (reconciled > 0.0) {
+                            continue; /// target may be reached now — loop top decides
+                        }
+                    }
+
                     if (const auto gateUntil = std::max(leg->delayUntil, leg->backoffUntil); gateUntil > now) {
                         const auto sleepUntil = std::min(gateUntil, steadyDeadline);
                         lk.unlock();
@@ -956,6 +1046,25 @@ struct ChasingLimitExecutor::P {
         }
 
         sweepRoutes(leg);
+
+        /// Post-sweep reconciliation (audit #6): no more events can land now,
+        /// so any remaining terminal-declared fills the events never delivered
+        /// are booked from the venue's cumulative figure — the result must not
+        /// under-report qty the account actually holds.
+        {
+            std::lock_guard lk(leg->m);
+            for (auto &[id, gap]: leg->fillGaps) {
+                const double room = gap.cumQty - leg->orderFilled[id];
+                if (room <= 1e-12) {
+                    continue;
+                }
+                const double px = gap.price > 0.0 ? gap.price : (leg->filledQty > 0.0 ? leg->filledNotional / leg->filledQty : 0.0);
+                leg->orderFilled[id] = gap.cumQty;
+                leg->filledQty += room;
+                leg->filledNotional += room * px;
+                spdlog::warn("{}: order {} fills reconciled at teardown (+{:.6g} @ {:.6g}) — fill events never arrived", leg->symbol, id, room, px);
+            }
+        }
     }
 
     /// Dust full-close: ONE reduce-only market order (venue min-notional
