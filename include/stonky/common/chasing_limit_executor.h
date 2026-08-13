@@ -15,6 +15,7 @@ Copyright (c) 2026 Vitezslav Kot <vitezslav.kot@stonky.cz>, Stonky s.r.o.
 #include <optional>
 #include <stop_token>
 #include <string>
+#include <vector>
 
 namespace stonky::execution {
 
@@ -46,6 +47,11 @@ struct ExecutionResult {
     /// Most recent venue reject reason (empty when no order was rejected) —
     /// the diagnostic for UNFILLED-with-rejects legs.
     std::string lastReject{};
+    /// Client order ids left in UNKNOWN venue state at teardown (lost ack or
+    /// exhausted cancel/resolution wait). The venue may still hold a live
+    /// order the accounting no longer tracks — the caller must alert and
+    /// verify the venue book; the next cycle's position sync bounds the drift.
+    std::vector<std::string> unresolvedOrders{};
 };
 
 struct ChasingConfig {

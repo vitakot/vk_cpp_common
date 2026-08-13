@@ -122,6 +122,10 @@ struct LegState {
     /// risk); each loop iteration re-attempts a cancel until the venue
     /// confirms gone (cancel()==false) or a terminal event arrives.
     std::set<std::string> orphanIds;
+    /// Orders still in unknown venue state when the teardown resolution wait
+    /// exhausted — surfaced in ExecutionResult so the caller can alert; the
+    /// venue may hold a live order the accounting no longer tracks.
+    std::vector<std::string> unresolvedIds;
     bool wake{false};
 
     void notify() {
@@ -687,6 +691,23 @@ struct ChasingLimitExecutor::P {
             const auto quote = freshQuote(leg->symbol);
 
             if (!quote) {
+                /// Stale/dead feed with an order still resting: the order sits
+                /// at a price computed from a book we can no longer see —
+                /// adverse-selection bait until the deadline. Cancel it and
+                /// stay out; a fresh submit requires a fresh quote by
+                /// construction, so the chase resumes when the feed recovers.
+                /// (cancelPendingOrder makes the repeat calls no-ops while the
+                /// cancel is in flight.)
+                std::string active;
+                {
+                    std::lock_guard lk(leg->m);
+                    active = leg->activeOrder;
+                }
+
+                if (!active.empty()) {
+                    cancelActive(leg, active);
+                }
+
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 continue;
             }
@@ -1035,6 +1056,15 @@ struct ChasingLimitExecutor::P {
                 std::lock_guard lk(leg->m);
 
                 if (!leg->activeOrder.empty() || !leg->orphanIds.empty()) {
+                    /// Record the ids for the ExecutionResult — a stray order
+                    /// the venue may still hold is an operator alert, not just
+                    /// a log line.
+                    if (!leg->activeOrder.empty()) {
+                        leg->unresolvedIds.push_back(leg->activeOrder);
+                    }
+
+                    leg->unresolvedIds.insert(leg->unresolvedIds.end(), leg->orphanIds.begin(), leg->orphanIds.end());
+
                     spdlog::warn(fmt::format("{}: order resolution wait exhausted (3 s, orphans={}) — result may under-report fills; verify venue for stray orders",
                                              leg->symbol, leg->orphanIds.size()));
                 }
@@ -1150,6 +1180,7 @@ ExecutionResult ChasingLimitExecutor::execute(const std::string &symbol, const d
         result.error = leg->fatalError;
         result.note = leg->skipNote;
         result.lastReject = leg->lastReject;
+        result.unresolvedOrders = leg->unresolvedIds;
 
         if (!leg->fatalError.empty()) {
             result.status = ExecStatus::ABORTED;
