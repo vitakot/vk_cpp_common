@@ -193,9 +193,13 @@ struct ChasingLimitExecutor::P {
         std::erase_if(orderRoutes, [&leg](const auto &kv) { return kv.second == leg; });
     }
 
-    void addSymbolRoute(const std::string &symbol, const std::shared_ptr<LegState> &leg) {
+    /// Registers the symbol → leg wakeup route. Returns false when a route for
+    /// the symbol already exists — a second concurrent execute() on the same
+    /// symbol would silently overwrite the first leg's route, and the older
+    /// call's teardown would then unsubscribe the newer call's quotes.
+    [[nodiscard]] bool addSymbolRoute(const std::string &symbol, const std::shared_ptr<LegState> &leg) {
         std::lock_guard lk(routesM);
-        symbolRoutes[symbol] = leg;
+        return symbolRoutes.try_emplace(symbol, leg).second;
     }
 
     void removeSymbolRoute(const std::string &symbol) {
@@ -1198,7 +1202,19 @@ ExecutionResult ChasingLimitExecutor::execute(const std::string &symbol, const d
     /// Quote wakeups route by symbol; the guard tears the route and the
     /// ticker subscription down on EVERY exit path (Python's finally-block
     /// unsubscribe — subscriptions must not accumulate over a month-long run).
-    m_p->addSymbolRoute(symbol, leg);
+    /// A refused registration = another execute() is still chasing this symbol
+    /// (one-execute-per-symbol doctrine) — abort THIS call instead of hijacking
+    /// the running leg's route and subscription.
+    if (!m_p->addSymbolRoute(symbol, leg)) {
+        spdlog::error("{}: concurrent execute() refused — another chase for this symbol is still running", symbol);
+
+        {
+            std::lock_guard lk(leg->m);
+            leg->fatalError = "concurrent execute() on the same symbol refused";
+        }
+
+        return buildResult(std::nullopt, 0.0);
+    }
 
     struct QuoteCleanup {
         P *p;
